@@ -10,6 +10,7 @@ Trabalho de grupo de Engenharia de Software · UBI · 2026/27 · Docentes: Nuno 
 ![React](https://img.shields.io/badge/React-18-087ea4?logo=react&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-1d63ed?logo=docker&logoColor=white)
+[![Testes](https://github.com/TiagoPereira001/Engenharia-de-Software/actions/workflows/ci.yml/badge.svg)](https://github.com/TiagoPereira001/Engenharia-de-Software/actions/workflows/ci.yml)
 ![Testes](https://img.shields.io/badge/testes-31%20%2B%2023-2e7d32)
 
 [Jira](https://ubi-team-ebw5rr6y.atlassian.net/jira/software/projects/EDS/boards/3) ·
@@ -275,13 +276,15 @@ git pull
 git switch -c feature/EDS-166-contas
 ```
 
-As mensagens de commit seguem os [padrões de commits](https://github.com/iuricode/padroes-de-commits): `:emoji: tipo(âmbito): descrição`, com a chave do cartão do Jira no rodapé.
+As mensagens de commit seguem os [Conventional Commits](https://www.conventionalcommits.org/pt-br), sem emojis: `tipo(âmbito): descrição`, com a chave do cartão do Jira no rodapé.
 
 ```bash
-git commit -m ":sparkles: feat(pedidos): aviso de pedidos parecidos" -m "Refs: EDS-169"
+git commit -m "feat(pedidos): aviso de pedidos parecidos" -m "Refs: EDS-169"
 ```
 
-A chave vai em maiúsculas na branch, no rodapé do commit e no título do pull request. Palavras-passe reais e chaves de API não entram no repositório. A tabela dos tipos e dos emojis está em [Git e pull requests](wiki/06-codigo/git.md#mensagens-de-commit).
+A chave vai em maiúsculas na branch, no rodapé do commit e no título do pull request. Palavras-passe reais e chaves de API não entram no repositório. A tabela dos tipos está em [Git e pull requests](wiki/06-codigo/git.md#mensagens-de-commit).
+
+Cada sprint fecha com uma versão numerada: uma tag no Git (`v0.3.0`, `v0.4.0`...) e uma release no GitHub com o que entrou. Ver [Versões](wiki/06-codigo/git.md#versões).
 
 ## Avaliação
 

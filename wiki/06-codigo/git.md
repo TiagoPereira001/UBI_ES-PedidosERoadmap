@@ -21,53 +21,65 @@ git switch -c feature/EDS-167-submeter-pedido
 
 ## Mensagens de commit
 
-Seguimos os [padrões de commits](https://github.com/iuricode/padroes-de-commits), que se baseiam nos [Conventional Commits](https://www.conventionalcommits.org/pt-br). Desde 28/10/2026 todos os commits usam este formato:
+Seguimos os [Conventional Commits](https://www.conventionalcommits.org/pt-br), sem emojis. Desde 14/11/2026 todos os commits usam este formato:
 
 ```text
-:emoji: tipo(âmbito): descrição
+tipo(âmbito): descrição
 ```
 
-- **emoji:** o código do emoji do tipo, da tabela abaixo. O GitHub mostra-o como imagem.
-- **tipo:** diz a intenção do commit (`feat`, `fix`, `docs`...).
+- **tipo:** diz a intenção do commit (`feat`, `fix`, `docs`...), da tabela abaixo.
 - **(âmbito):** opcional, a parte do projeto que mudou, em minúsculas: `pedidos`, `contas`, `frontend`, `docker`, `wiki`, `readme`, `modelacao`, `registo-ia`.
 - **descrição:** curta (até umas quatro ou cinco palavras), em português de Portugal, a dizer o que fizemos.
 - **Rodapé:** opcional, a chave do cartão do Jira numa linha à parte, depois de uma linha em branco: `Refs: EDS-169`.
 
 Um `!` depois do tipo ou do âmbito marca uma mudança que parte o que já existia: `feat(api)!: ...`.
 
-| Emoji | Código | Tipo | Quando |
-|---|---|---|---|
-| ✨ | `:sparkles:` | `feat` | Funcionalidade nova |
-| 💄 | `:lipstick:` | `feat` | Aspeto da interface (CSS, ecrãs) |
-| 🐛 | `:bug:` | `fix` | Correção de um erro |
-| 📚 | `:books:` | `docs` | Documentação: README, wiki, LaTeX, diagramas |
-| 💡 | `:bulb:` | `docs` | Comentários no código |
-| 🧪 | `:test_tube:` | `test` | Testes novos ou alterados |
-| ➕ | `:heavy_plus_sign:` | `build` | Dependência nova |
-| ➖ | `:heavy_minus_sign:` | `build` | Dependência removida |
-| 🧱 | `:bricks:` | `ci` | Docker e GitHub Actions |
-| 🔧 | `:wrench:` | `chore` | Configuração |
-| 🙈 | `:see_no_evil:` | `chore` | `.gitignore` |
-| 🚚 | `:truck:` | `chore` | Mover ou mudar o nome de ficheiros |
-| ♻️ | `:recycle:` | `refactor` | Reorganizar código sem mudar o que faz |
-| ⚡ | `:zap:` | `perf` | Desempenho |
-| 🗃️ | `:card_file_box:` | `raw` | Dados e parâmetros (por exemplo, os dados de exemplo) |
-| 🧹 | `:broom:` | `cleanup` | Limpeza: código comentado, restos sem uso |
-| 🗑️ | `:wastebasket:` | `remove` | Apagar ficheiros ou funcionalidades |
-| 🔒️ | `:lock:` | `security` | Segurança: permissões, autenticação, dados expostos |
-| 💥 | `:boom:` | `fix` | Desfazer mudanças de um commit anterior |
+Os commits de 28/10 a 14/11 ainda têm um emoji no início (`:sparkles:`, `:books:`...). Ficam assim, porque mudar o histórico já publicado obrigava a reescrevê-lo no GitHub.
+
+| Tipo | Quando |
+|---|---|
+| `feat` | Funcionalidade nova ou aspeto da interface |
+| `fix` | Correção de um erro |
+| `docs` | Documentação: README, wiki, LaTeX, diagramas, comentários |
+| `test` | Testes novos ou alterados |
+| `build` | Dependências |
+| `ci` | Docker e GitHub Actions |
+| `chore` | Configuração, `.gitignore`, mover ficheiros |
+| `refactor` | Reorganizar código sem mudar o que faz |
+| `perf` | Desempenho |
+| `revert` | Desfazer um commit anterior |
 
 Exemplos:
 
 ```bash
-git commit -m ":sparkles: feat(pedidos): aviso de pedidos parecidos" -m "Refs: EDS-169"
-git commit -m ":bug: fix(contas): erro ao entrar sem email"
-git commit -m ":books: docs(wiki): casos de uso por ator"
-git commit -m ":bricks: ci(docker): postgresql no docker compose"
-git commit -m ":test_tube: test(pedidos): voto repetido retira o voto"
+git commit -m "feat(pedidos): aviso de pedidos parecidos" -m "Refs: EDS-169"
+git commit -m "fix(contas): erro ao entrar sem email"
+git commit -m "docs(wiki): casos de uso por ator"
+git commit -m "ci(docker): postgresql no docker compose"
+git commit -m "test(pedidos): voto repetido retira o voto"
 ```
 
 Um commit faz uma coisa só. Se a mensagem precisa de "e" para juntar duas coisas diferentes, são dois commits.
+
+## Versões
+
+Cada sprint que entrega trabalho fecha com uma versão numerada ([EDS-184](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-184)). Assim sabe-se sempre o que foi apresentado em cada sprint e consegue-se voltar a esse ponto.
+
+- **Numeração:** `v0.<sprint>.<correção>`. Fica em `0.x` até à entrega final, que é a `v1.0.0`. Uma correção a uma versão já apresentada sobe o último número (`v0.4.1`).
+- **Quando:** na review do sprint, no último commit que a equipa apresentou.
+- **Onde:** uma tag no Git e uma release no GitHub com o que entrou; a mesma versão no Jira, com os cartões do sprint ligados a ela.
+
+```bash
+git tag -a v0.4.0 -m "Sprint 4: segundo incremento"
+git push origin v0.4.0
+```
+
+| Versão | Sprint | O que tem |
+|---|---|---|
+| `v0.3.0` | 3 | Arquitetura, modelação UML, wireframes corrigidos, base do back-end e do front-end, Docker e testes no GitHub Actions |
+| `v0.4.0` | 4 | Segundo incremento: oito ecrãs ligados à API (priorização com IA, backlog e sprints, quadro, comentários e notificações), ruff e cobertura no CI, ecrãs com o aspeto dos mockups |
+
+Para ver uma versão antiga: `git switch --detach v0.3.0` (e `git switch main` para voltar).
 
 ## Ver também
 

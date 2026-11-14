@@ -2,7 +2,7 @@
 
 [Índice](README.md) · [Visão do produto →](01-produto/visao.md)
 
-Última atualização: 1 de novembro de 2026, Sprint 4.
+Última atualização: 14 de novembro de 2026, Sprint 4.
 
 Esta página diz onde o projeto está. Quem mexe no projeto (pessoa ou agente de IA) atualiza-a quando alguma coisa muda.
 
@@ -40,6 +40,8 @@ O Sprint 3 está fechado no Jira; a apresentação dele é na semana de 2 de nov
 ## Sprint 4
 
 O código do sprint está dividido por módulos, um por pessoa, e entrou pela ordem Tiago, Marcus, Rui, João e Felipe ([quem fez o quê](07-scrum/sprint-4.md#como-se-divide-o-código)).
+
+Cada sprint passou a fechar com uma versão numerada no Git, no GitHub e no Jira (`v0.3.0`, `v0.4.0`), a pedido do professor no fim do Sprint 3. Ver [versões](06-codigo/git.md#versões).
 
 Por fazer no Sprint 4: review e retrospetiva ([EDS-42](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-42), [EDS-43](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-43)) e a apresentação ([EDS-183](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-183)).
 
