@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
+import Icone from "./Icone.jsx";
+import { iniciais, quando } from "./formatos.js";
 
 // A conversa de um pedido (ecrã 04, US-21 e US-23). @nome chama a pessoa e ela recebe uma notificação.
 export default function Conversa({ pedido, utilizador }) {
@@ -43,52 +45,69 @@ export default function Conversa({ pedido, utilizador }) {
     }, "Não foi possível enviar o comentário.");
   }
 
+  function guardarEdicao(evento, id) {
+    evento.preventDefault();
+    tentar(async () => {
+      await api.editarComentario(id, aEditar.texto);
+      setAEditar(null);
+    }, "Não foi possível editar.");
+  }
+
   return (
-    <div className="caixa">
-      <strong>Conversa</strong>
+    <section className="conversa" aria-label="Conversa">
+      <h2 className="titulo-mao">Conversa</h2>
       {comentarios.length === 0 && <p className="nota">Ainda não há comentários.</p>}
-      <ul className="conversa">
+      <ul>
         {comentarios.map((c) => (
           <li key={c.id}>
-            <div className="nota">
-              {c.autor} · {new Date(c.criado_em).toLocaleString("pt-PT")}{c.editado_em && " · editado"}
+            <span className="avatar">{iniciais(c.autor)}</span>
+            <div className="mensagem">
+              <div className="quem-quando">
+                {c.autor} · {quando(c.criado_em)}{c.editado_em && " · editado"}
+              </div>
+              {aEditar?.id === c.id ? (
+                <form onSubmit={(e) => guardarEdicao(e, c.id)}>
+                  <label htmlFor={`editar-${c.id}`}>Editar comentário</label>
+                  <textarea id={`editar-${c.id}`} rows={2} value={aEditar.texto} onChange={(e) => setAEditar({ ...aEditar, texto: e.target.value })} />
+                  <div className="botoes">
+                    <button type="submit" className="pequeno">Guardar</button>
+                    <button type="button" className="secundario pequeno" onClick={() => setAEditar(null)}>Cancelar</button>
+                  </div>
+                </form>
+              ) : (
+                <p>{c.texto}</p>
+              )}
+              {c.meu && aEditar?.id !== c.id && (
+                <div className="acoes-comentario">
+                  <button className="ligacao" onClick={() => setAEditar({ id: c.id, texto: c.texto })}>Editar</button>
+                  <button className="ligacao" onClick={() => tentar(() => api.apagarComentario(c.id), "Não foi possível apagar.")}>Apagar</button>
+                </div>
+              )}
             </div>
-            {aEditar?.id === c.id ? (
-              <form onSubmit={(e) => { e.preventDefault(); tentar(async () => { await api.editarComentario(c.id, aEditar.texto); setAEditar(null); }, "Não foi possível editar."); }}>
-                <label htmlFor={`editar-${c.id}`}>Editar comentário</label>
-                <textarea id={`editar-${c.id}`} rows={2} value={aEditar.texto} onChange={(e) => setAEditar({ ...aEditar, texto: e.target.value })} />
-                <button type="submit">Guardar</button>
-                <button type="button" className="secundario" onClick={() => setAEditar(null)}>Cancelar</button>
-              </form>
-            ) : (
-              <p>{c.texto}</p>
-            )}
-            {c.meu && aEditar?.id !== c.id && (
-              <>
-                <button className="secundario" onClick={() => setAEditar({ id: c.id, texto: c.texto })}>Editar</button>
-                <button className="secundario" onClick={() => tentar(() => api.apagarComentario(c.id), "Não foi possível apagar.")}>Apagar</button>
-              </>
-            )}
           </li>
         ))}
       </ul>
       {utilizador ? (
-        <form onSubmit={enviar}>
-          <label htmlFor="comentario">Escreve um comentário. Usa @ para chamar alguém.</label>
-          <textarea id="comentario" rows={2} value={texto} onChange={(e) => setTexto(e.target.value)} />
+        <form className="escrever" onSubmit={enviar}>
+          <label htmlFor="comentario" className="so-leitor">Escreve um comentário. Usa @ para chamar alguém.</label>
+          <div className="campo-comentario">
+            <Icone nome="conversa" tamanho={18} />
+            <textarea id="comentario" rows={1} value={texto} onChange={(e) => setTexto(e.target.value)}
+              placeholder="Escreve um comentário. Usa @ para chamar alguém." />
+          </div>
           {sugestoes.length > 0 && (
-            <div className="sugestoes">
+            <div className="sugestoes" aria-label="Pessoas">
               {sugestoes.map((nome) => (
-                <button key={nome} type="button" className="secundario" onClick={() => mencionar(nome)}>@{nome}</button>
+                <button key={nome} type="button" className="secundario pequeno" onClick={() => mencionar(nome)}>@{nome}</button>
               ))}
             </div>
           )}
-          <button type="submit" disabled={!texto.trim()}>Comentar</button>
+          <button type="submit" className="pequeno" disabled={!texto.trim()}>Comentar</button>
         </form>
       ) : (
         <p className="nota">Entra para comentar.</p>
       )}
       {erro && <p role="alert">{erro}</p>}
-    </div>
+    </section>
   );
 }

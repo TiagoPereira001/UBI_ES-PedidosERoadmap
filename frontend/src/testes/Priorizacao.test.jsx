@@ -53,7 +53,7 @@ describe("priorização", () => {
 
   it("a sugestão mostra a razão e deixa manter a minha ordem (Ricardo)", async () => {
     abrir("product_owner");
-    fireEvent.click(await screen.findByRole("button", { name: "Pedir sugestão" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Pedir sugestão da IA" }));
     expect(await screen.findByText(/Razão: Impacto alto/)).toBeTruthy();
     expect(screen.getByText(/regra local/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Manter a minha ordem" })).toBeTruthy();

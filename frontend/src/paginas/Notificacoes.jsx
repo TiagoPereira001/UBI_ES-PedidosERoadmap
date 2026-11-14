@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
+import Cabecalho from "../componentes/Cabecalho.jsx";
+import Icone from "../componentes/Icone.jsx";
+import { quando } from "../componentes/formatos.js";
+
+const ICONE_DO_TIPO = { estado: "bandeira", mencao: "arroba", comentario: "conversa" };
 
 const OPCOES = [
   ["mencoes", "alguém me menciona"],
@@ -47,7 +52,7 @@ export default function Notificacoes({ utilizador }) {
   if (!utilizador) {
     return (
       <section>
-        <h1>Notificações</h1>
+        <Cabecalho titulo="Notificações" />
         <p><Link to="/entrar">Entra</Link> para veres as tuas notificações.</p>
       </section>
     );
@@ -55,43 +60,46 @@ export default function Notificacoes({ utilizador }) {
   if (!dados || !prefs) return erro ? <p role="alert">{erro}</p> : <p>A carregar...</p>;
 
   return (
-    <section className="duas-colunas">
-      <div>
-        <div className="cabecalho">
-          <div>
-            <h1>Notificações</h1>
-            <p className="nota">{dados.por_ler} por ler</p>
-          </div>
-          {dados.por_ler > 0 && <button className="secundario" onClick={() => marcar()}>Marcar todas como lidas</button>}
+    <section>
+      <Cabecalho titulo="Notificações" sub={`${dados.por_ler} por ler`}>
+        {dados.por_ler > 0 && <button className="secundario" onClick={() => marcar()}>Marcar todas como lidas</button>}
+      </Cabecalho>
+      <div className="grelha-lado">
+        <div className="coluna">
+          {dados.itens.length === 0 ? (
+            <div className="painel vazio"><p>Ainda não tens notificações.</p></div>
+          ) : (
+            <ul className="painel notificacoes">
+              {dados.itens.map((n) => (
+                <li key={n.id} className={n.lida ? "lida" : "por-ler"}>
+                  <span className="ponto" aria-label={n.lida ? undefined : "por ler"} />
+                  <span className="avatar"><Icone nome={ICONE_DO_TIPO[n.tipo] || "sino"} tamanho={16} /></span>
+                  {n.pedido ? (
+                    <Link to={`/pedidos/${n.pedido}`} onClick={() => !n.lida && marcar([n.id])}>{n.texto}</Link>
+                  ) : (
+                    <span>{n.texto}</span>
+                  )}
+                  <span className="suave quando">{quando(n.criada_em)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {erro && <p role="alert">{erro}</p>}
         </div>
-        {dados.itens.length === 0 && <p>Ainda não tens notificações.</p>}
-        <ul className="notificacoes">
-          {dados.itens.map((n) => (
-            <li key={n.id} className={n.lida ? "lida" : "por-ler"}>
-              {n.pedido ? (
-                <Link to={`/pedidos/${n.pedido}`} onClick={() => !n.lida && marcar([n.id])}>{n.texto}</Link>
-              ) : (
-                n.texto
-              )}
-              <span className="nota"> · {new Date(n.criada_em).toLocaleString("pt-PT")}</span>
-            </li>
-          ))}
-        </ul>
-        {erro && <p role="alert">{erro}</p>}
+        <aside className="coluna">
+          <form className="painel" onSubmit={guardar}>
+            <h2 className="titulo-mao">Avisa-me quando...</h2>
+            {OPCOES.map(([campo, texto]) => (
+              <label key={campo} className="opcao">
+                <input type="checkbox" checked={prefs[campo]} onChange={(e) => setPrefs({ ...prefs, [campo]: e.target.checked })} />
+                {texto}
+              </label>
+            ))}
+            <button type="submit">Guardar preferências</button>
+            {mensagem && <p className="nota">{mensagem}</p>}
+          </form>
+        </aside>
       </div>
-      <aside>
-        <form className="caixa" onSubmit={guardar}>
-          <strong>Avisa-me quando...</strong>
-          {OPCOES.map(([campo, texto]) => (
-            <label key={campo} className="opcao">
-              <input type="checkbox" checked={prefs[campo]} onChange={(e) => setPrefs({ ...prefs, [campo]: e.target.checked })} />
-              {texto}
-            </label>
-          ))}
-          <button type="submit">Guardar preferências</button>
-          {mensagem && <p className="nota">{mensagem}</p>}
-        </form>
-      </aside>
     </section>
   );
 }

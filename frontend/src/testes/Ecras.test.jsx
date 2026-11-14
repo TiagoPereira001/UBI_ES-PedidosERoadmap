@@ -15,8 +15,8 @@ const abrir = (Ecra) => render(<MemoryRouter><Ecra /></MemoryRouter>);
 
 describe("ecrãs com dados de exemplo", () => {
   const ECRAS = [
-    [Roadmap, "Roadmap"], [Release, "Release 2.0"], [GerarHistorias, "Gerar user stories"],
-    [Rastreabilidade, "Rastreabilidade"], [EspacoEquipa, "Espaço da equipa"],
+    [Roadmap, "Roadmap"], [Release, "Release 2.0"], [GerarHistorias, "User stories do pedido"],
+    [Rastreabilidade, "Rastreabilidade"], [EspacoEquipa, "Equipa A"],
     [Dashboard, "Dashboard"], [CargaEquipas, "Carga das equipas"],
   ];
 

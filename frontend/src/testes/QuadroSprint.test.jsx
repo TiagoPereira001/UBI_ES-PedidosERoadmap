@@ -28,7 +28,7 @@ describe("quadro do sprint", () => {
     abrir("programador");
     expect(await screen.findByText("1 de 2 funcionalidades concluídas · 5 de 10 pontos")).toBeTruthy();
     for (const coluna of ["Aprovado", "Em desenvolvimento", "Em revisão", "Concluído"]) {
-      expect(screen.getByText(coluna, { selector: "strong" })).toBeTruthy();
+      expect(screen.getByRole("heading", { level: 2, name: new RegExp(`^${coluna} \\d+$`) })).toBeTruthy();
     }
   });
 

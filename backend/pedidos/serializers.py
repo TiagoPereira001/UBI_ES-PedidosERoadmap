@@ -31,7 +31,7 @@ class PedidoSerializer(serializers.ModelSerializer):
         model = Pedido
         fields = [
             "id", "titulo", "descricao", "categoria", "categoria_nome", "etiquetas", "estado", "estado_nome",
-            "origem", "autor", "criado_em", "total_votos", "votei",
+            "origem", "autor", "criado_em", "atualizado_em", "total_votos", "votei",
         ]
         read_only_fields = ["estado"]
 

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
+import Cabecalho from "../componentes/Cabecalho.jsx";
+import Icone from "../componentes/Icone.jsx";
+import { diaMes } from "../componentes/formatos.js";
 
 const VAZIO = { nome: "", objetivo: "", inicio: "", fim: "", capacidade: 10 };
 
@@ -8,8 +11,8 @@ function Cartao({ item, children }) {
   return (
     <li className="cartao">
       <Link to={`/pedidos/${item.pedido}`}>{item.titulo}</Link>
-      <div className="nota">
-        {item.esforco ? `${item.esforco} pontos` : item.motivo || "sem estimativa"} · {item.equipa?.nome || item.estado_nome}
+      <div className="meta-cartao">
+        {item.esforco ? `${item.esforco} pontos` : item.motivo || "sem estimativa"} · {item.equipa?.nome || item.estado_nome.toLowerCase()}
       </div>
       {children}
     </li>
@@ -67,31 +70,27 @@ export default function PlanearSprint({ utilizador }) {
 
   return (
     <section>
-      <div className="cabecalho">
-        <div>
-          <h1>{sprint ? `Planear o ${sprint.nome}` : "Planear sprint"}</h1>
-          {sprint && (
-            <p className="nota">
-              {new Date(sprint.inicio).toLocaleDateString("pt-PT")} a {new Date(sprint.fim).toLocaleDateString("pt-PT")} · objetivo: {sprint.objetivo}
-            </p>
-          )}
-        </div>
+      <Cabecalho
+        titulo={sprint ? `Planear o ${sprint.nome}` : "Planear sprint"}
+        sub={sprint ? `${diaMes(sprint.inicio)} a ${diaMes(sprint.fim)} · objetivo: ${sprint.objetivo}` : "Ainda não há um sprint a planear."}
+      >
+        {sprint?.estado === "em_curso" && <Link className="botao secundario" to="/sprint/quadro">Ver o quadro</Link>}
         {eProductOwner && sprint?.estado === "planeado" && (
           <button onClick={() => tentar(() => api.comecarSprint(sprint.id), "Não foi possível começar o sprint.")}>Começar sprint</button>
         )}
-      </div>
+      </Cabecalho>
       {erro && <p role="alert">{erro}</p>}
       {mensagem && <p>{mensagem}</p>}
 
-      <div className="duas-colunas">
-        <div className="caixa">
-          <strong>Product backlog</strong> <span className="nota">{backlog.length}</span>
+      <div className="planear">
+        <div className="painel">
+          <h2 className="titulo-fita">Product backlog <span className="conta">{backlog.length}</span></h2>
           {backlog.length === 0 && <p className="nota">O backlog está vazio. Acrescenta pedidos aprovados.</p>}
           <ul className="cartoes">
             {backlog.map((item) => (
               <Cartao key={item.pedido} item={item}>
                 {eProductOwner && sprint && item.pronto && (
-                  <button onClick={() => tentar(() => api.porNoSprint(sprint.id, item.pedido), "Não foi possível pôr no sprint.")}>
+                  <button className="secundario pequeno" onClick={() => tentar(() => api.porNoSprint(sprint.id, item.pedido), "Não foi possível pôr no sprint.")}>
                     Pôr no sprint
                   </button>
                 )}
@@ -99,39 +98,42 @@ export default function PlanearSprint({ utilizador }) {
             ))}
           </ul>
           {eProductOwner && aprovados.length > 0 && (
-            <>
-              <strong>Aprovados fora do backlog</strong>
+            <div className="aprovados-fora">
+              <h3>Aprovados fora do backlog</h3>
               <ul>
                 {aprovados.map((p) => (
                   <li key={p.id}>
-                    {p.titulo}{" "}
-                    <button className="secundario" onClick={() => tentar(() => api.acrescentarAoBacklog(p.id), "Não foi possível acrescentar.")}>
+                    <span>{p.titulo}</span>
+                    <button className="secundario pequeno" onClick={() => tentar(() => api.acrescentarAoBacklog(p.id), "Não foi possível acrescentar.")}>
                       Acrescentar ao backlog
                     </button>
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
         </div>
 
-        <div className="caixa">
+        <span className="seta-entre" aria-hidden="true"><Icone nome="seta" /></span>
+
+        <div className="painel">
           {sprint ? (
             <>
-              <strong>{sprint.nome}</strong> <span className="nota">{sprint.itens.length} · {sprint.estado_nome}</span>
+              <h2 className="titulo-fita">{sprint.nome} <span className="conta">{sprint.itens.length}</span></h2>
               <ul className="cartoes">
                 {sprint.itens.map((item) => (
                   <Cartao key={item.pedido} item={item}>
                     {eProductOwner && (
-                      <button className="secundario" onClick={() => tentar(() => api.tirarDoSprint(sprint.id, item.pedido), "Não foi possível tirar.")}>
+                      <button className="secundario pequeno" onClick={() => tentar(() => api.tirarDoSprint(sprint.id, item.pedido), "Não foi possível tirar.")}>
                         Tirar do sprint
                       </button>
                     )}
                   </Cartao>
                 ))}
               </ul>
-              <p>Capacidade</p>
-              <div className="barra" role="progressbar" aria-valuenow={sprint.pontos} aria-valuemax={sprint.capacidade}>
+              {eProductOwner && <p className="largar">Usa «Pôr no sprint» nos cartões do backlog</p>}
+              <p className="rotulo-barra">Capacidade</p>
+              <div className="barra" role="progressbar" aria-valuenow={sprint.pontos} aria-valuemax={sprint.capacidade} aria-label="Capacidade usada">
                 <span style={{ width: `${percentagem}%` }} />
               </div>
               <p>{sprint.pontos} de {sprint.capacidade} pontos usados</p>
@@ -139,15 +141,21 @@ export default function PlanearSprint({ utilizador }) {
             </>
           ) : semSprint && eProductOwner ? (
             <form onSubmit={criar}>
-              <strong>Novo sprint</strong>
+              <h2 className="titulo-fita">Novo sprint</h2>
               <label htmlFor="nome">Nome</label>
               <input id="nome" value={novo.nome} onChange={mudarNovo("nome")} required />
               <label htmlFor="objetivo">Objetivo</label>
               <input id="objetivo" value={novo.objetivo} onChange={mudarNovo("objetivo")} required />
-              <label htmlFor="inicio">Início</label>
-              <input id="inicio" type="date" value={novo.inicio} onChange={mudarNovo("inicio")} required />
-              <label htmlFor="fim">Fim</label>
-              <input id="fim" type="date" value={novo.fim} onChange={mudarNovo("fim")} required />
+              <div className="campos-lado">
+                <div>
+                  <label htmlFor="inicio">Início</label>
+                  <input id="inicio" type="date" value={novo.inicio} onChange={mudarNovo("inicio")} required />
+                </div>
+                <div>
+                  <label htmlFor="fim">Fim</label>
+                  <input id="fim" type="date" value={novo.fim} onChange={mudarNovo("fim")} required />
+                </div>
+              </div>
               <label htmlFor="capacidade">Capacidade (pontos)</label>
               <input id="capacidade" type="number" min="1" value={novo.capacidade} onChange={mudarNovo("capacidade")} required />
               <button type="submit">Criar sprint</button>

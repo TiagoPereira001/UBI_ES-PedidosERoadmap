@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
+import Cabecalho from "../componentes/Cabecalho.jsx";
+import { quando } from "../componentes/formatos.js";
 
 const ORDENS = [
   ["manual", "Ordem do Product Owner"],
@@ -73,123 +75,131 @@ export default function Priorizacao({ utilizador }) {
 
   const nivelDe = Object.fromEntries((sugestao?.sugestoes || []).map((s) => [s.pedido_id, s.nivel]));
   const podeMover = eProductOwner && ordem === "manual";
+  const subtitulo = eProductOwner
+    ? "Usa as setas para mudar a ordem. Fica registado quem mudou e porquê."
+    : "A ordem é do Product Owner. Aqui vês a ordem atual.";
 
   return (
-    <section className="duas-colunas">
-      <div>
-        <div className="cabecalho">
-          <h1>Priorização</h1>
-          <button className="secundario" onClick={verHistorico}>{historico ? "Esconder histórico" : "Ver histórico"}</button>
+    <section>
+      <Cabecalho titulo="Priorização" sub={subtitulo}>
+        <button className="secundario" onClick={verHistorico}>{historico ? "Esconder histórico" : "Ver histórico"}</button>
+        {eProductOwner && <button onClick={() => guardar(false)} disabled={!mudou && !razao}>Guardar ordem</button>}
+      </Cabecalho>
+
+      <div className="grelha-lado">
+        <div className="coluna">
+          <div className="ver-por">
+            <label htmlFor="ordem">Ver por</label>
+            <select id="ordem" value={ordem} onChange={(e) => setOrdem(e.target.value)}>
+              {ORDENS.map(([valor, nome]) => <option key={valor} value={valor}>{nome}</option>)}
+            </select>
+          </div>
+
+          {itens.length === 0 ? (
+            <div className="painel vazio"><p>Não há pedidos em análise nem aprovados para priorizar.</p></div>
+          ) : (
+            <div className="painel tabela-painel">
+              <table className="tabela-ordem">
+                <thead>
+                  <tr>
+                    <th aria-label="Lugar"></th><th>Pedido</th><th>Votos</th><th>Impacto</th><th>Esforço (pontos)</th>
+                    {sugestao && <th>A IA sugere</th>}
+                    {podeMover && <th aria-label="Mover"></th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {itens.map((p, i) => (
+                    <tr key={p.id} className={p.fora_da_capacidade ? "fora" : undefined}>
+                      <td className="lugar">{p.posicao ?? "–"}</td>
+                      <td>
+                        <Link className="titulo-pedido" to={`/pedidos/${p.id}`}>{p.titulo}</Link>
+                        <div className="meta-pedido"><span className={`estado estado-${p.estado}`}>{p.estado_nome}</span></div>
+                      </td>
+                      <td className="votos">{p.total_votos}</td>
+                      <td>
+                        {eProductOwner ? (
+                          <select className="pequeno" aria-label={`Impacto de ${p.titulo}`} value={p.impacto ?? ""} onChange={(e) => estimar(p.id, "impacto", e.target.value)}>
+                            <option value="" disabled>por estimar</option>
+                            {dados.escala.impacto.map((n) => <option key={n.valor} value={n.valor}>{n.nome}</option>)}
+                          </select>
+                        ) : (
+                          dados.escala.impacto.find((n) => n.valor === p.impacto)?.nome ?? "por estimar"
+                        )}
+                      </td>
+                      <td>
+                        {estimaEsforco ? (
+                          <select className="pequeno" aria-label={`Esforço de ${p.titulo}`} value={p.esforco ?? ""} onChange={(e) => estimar(p.id, "esforco", e.target.value)}>
+                            <option value="" disabled>sem estimativa</option>
+                            {dados.escala.esforco.map((n) => <option key={n} value={n}>{n}</option>)}
+                          </select>
+                        ) : (
+                          p.esforco ?? "sem estimativa"
+                        )}
+                      </td>
+                      {sugestao && <td><span className="autocolante">{nivelDe[p.id]}</span></td>}
+                      {podeMover && (
+                        <td className="mover">
+                          <button className="secundario pequeno" aria-label={`Subir ${p.titulo}`} disabled={i === 0} onClick={() => { setItens(mover(itens, i, i - 1)); setMudou(true); }}>↑</button>
+                          <button className="secundario pequeno" aria-label={`Descer ${p.titulo}`} disabled={i === itens.length - 1} onClick={() => { setItens(mover(itens, i, i + 1)); setMudou(true); }}>↓</button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {dados.aviso && <p className="aviso">{dados.aviso}</p>}
+          {erro && <p role="alert">{erro}</p>}
+
+          {historico && (
+            <div className="painel">
+              <h2 className="titulo-painel">Histórico da ordem</h2>
+              {historico.length === 0 && <p className="nota">A ordem ainda não foi mudada.</p>}
+              <ol className="historico">
+                {historico.map((h) => (
+                  <li key={h.id}>
+                    <span className="suave">{quando(h.quando)} · {h.autor}{h.aceitou_sugestao_ia && " · aceitou a sugestão da IA"}</span>
+                    {h.razao && <span>{h.razao}</span>}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </div>
-        <p className="nota">
-          {eProductOwner
-            ? "Usa as setas para mudar a ordem. Cada mudança fica registada com data, autor e razão."
-            : "A ordem é do Product Owner. Aqui vês a ordem atual."}
-        </p>
-        <label htmlFor="ordem">Ver por</label>
-        <select id="ordem" value={ordem} onChange={(e) => setOrdem(e.target.value)}>
-          {ORDENS.map(([valor, nome]) => <option key={valor} value={valor}>{nome}</option>)}
-        </select>
 
-        {itens.length === 0 ? (
-          <p>Não há pedidos em análise nem aprovados para priorizar.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>Pedido</th><th>Votos</th><th>Impacto</th><th>Esforço</th>
-                {sugestao && <th>A IA sugere</th>}
-                {podeMover && <th>Mover</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {itens.map((p, i) => (
-                <tr key={p.id} className={p.fora_da_capacidade ? "fora" : undefined}>
-                  <td>{p.posicao ?? "–"}</td>
-                  <td><Link to={`/pedidos/${p.id}`}>{p.titulo}</Link> <span className="nota">{p.estado_nome}</span></td>
-                  <td>{p.total_votos}</td>
-                  <td>
-                    {eProductOwner ? (
-                      <select aria-label={`Impacto de ${p.titulo}`} value={p.impacto ?? ""} onChange={(e) => estimar(p.id, "impacto", e.target.value)}>
-                        <option value="" disabled>por estimar</option>
-                        {dados.escala.impacto.map((n) => <option key={n.valor} value={n.valor}>{n.nome}</option>)}
-                      </select>
-                    ) : (
-                      dados.escala.impacto.find((n) => n.valor === p.impacto)?.nome ?? "por estimar"
-                    )}
-                  </td>
-                  <td>
-                    {estimaEsforco ? (
-                      <select aria-label={`Esforço de ${p.titulo}`} value={p.esforco ?? ""} onChange={(e) => estimar(p.id, "esforco", e.target.value)}>
-                        <option value="" disabled>sem estimativa</option>
-                        {dados.escala.esforco.map((n) => <option key={n} value={n}>{n} pontos</option>)}
-                      </select>
-                    ) : (
-                      p.esforco ? `${p.esforco} pontos` : "sem estimativa"
-                    )}
-                  </td>
-                  {sugestao && <td><span className="post-it">{nivelDe[p.id]}</span></td>}
-                  {podeMover && (
-                    <td>
-                      <button aria-label={`Subir ${p.titulo}`} disabled={i === 0} onClick={() => { setItens(mover(itens, i, i - 1)); setMudou(true); }}>↑</button>
-                      <button aria-label={`Descer ${p.titulo}`} disabled={i === itens.length - 1} onClick={() => { setItens(mover(itens, i, i + 1)); setMudou(true); }}>↓</button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        {dados.aviso && <p className="aviso">{dados.aviso}</p>}
-        {erro && <p role="alert">{erro}</p>}
-
-        {historico && (
-          <div className="caixa">
-            <strong>Histórico da ordem</strong>
-            {historico.length === 0 && <p className="nota">A ordem ainda não foi mudada.</p>}
-            <ol>
-              {historico.map((h) => (
-                <li key={h.id}>
-                  {new Date(h.quando).toLocaleString("pt-PT")} · {h.autor}
-                  {h.aceitou_sugestao_ia && " · aceitou a sugestão da IA"}
-                  {h.razao && <div>{h.razao}</div>}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-      </div>
-
-      {eProductOwner && (
-        <aside>
-          <div className="caixa">
-            <strong>Porque esta ordem?</strong>
-            <label htmlFor="razao">Razão (fica no histórico)</label>
-            <textarea id="razao" rows={3} value={razao} onChange={(e) => setRazao(e.target.value)} />
-            <button onClick={() => guardar(false)} disabled={!mudou && !razao}>Guardar ordem</button>
-          </div>
-          <div className="caixa">
-            <strong>Sugestão da IA</strong>
-            {!sugestao ? (
-              <button className="secundario" onClick={pedirSugestao}>Pedir sugestão</button>
-            ) : (
-              <>
+        {eProductOwner && (
+          <aside className="coluna">
+            <div className="painel">
+              <h2 className="titulo-mao">Porque esta ordem?</h2>
+              <label htmlFor="razao">Razão (fica no histórico)</label>
+              <textarea id="razao" rows={3} value={razao} onChange={(e) => setRazao(e.target.value)} />
+              {!sugestao ? (
+                <button className="secundario largo" onClick={pedirSugestao}>Pedir sugestão da IA</button>
+              ) : (
+                <>
+                  <button className="largo" onClick={() => guardar(true)}>Aceitar as sugestões</button>
+                  <button className="secundario largo" onClick={() => setSugestao(null)}>Manter a minha ordem</button>
+                </>
+              )}
+            </div>
+            {sugestao && (
+              <div className="postit">
+                <h2 className="titulo-mao">Sugestão da IA</h2>
                 {sugestao.fonte !== "ia" && (
-                  <p className="nota">O serviço de IA não está disponível. Esta sugestão foi feita com a regra local (votos, impacto e esforço).</p>
+                  <p className="nota-postit">O serviço de IA não está disponível. Esta sugestão foi feita com a regra local (votos, impacto e esforço).</p>
                 )}
                 <ol>
                   {sugestao.sugestoes.map((s) => (
                     <li key={s.pedido_id}>{s.titulo} ({s.nivel}). Razão: {s.razao}</li>
                   ))}
                 </ol>
-                <button onClick={() => guardar(true)}>Aceitar as sugestões</button>
-                <button className="secundario" onClick={() => setSugestao(null)}>Manter a minha ordem</button>
-              </>
+                <p className="nota-postit">A IA só sugere. Nada muda sem o Product Owner aceitar.</p>
+              </div>
             )}
-            <p className="nota">A IA só sugere. Nada muda sem o Product Owner aceitar.</p>
-          </div>
-        </aside>
-      )}
+          </aside>
+        )}
+      </div>
     </section>
   );
 }

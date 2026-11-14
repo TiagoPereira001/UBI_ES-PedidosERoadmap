@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, ESTADOS } from "../api.js";
+import Cabecalho from "../componentes/Cabecalho.jsx";
 
 // Ecrã 07. Uma coluna por estado. Cada um só vê os botões das mudanças que o seu papel pode fazer (US-12, US-13).
 export default function QuadroSprint({ utilizador }) {
@@ -52,9 +53,9 @@ export default function QuadroSprint({ utilizador }) {
   if (semSprint) {
     return (
       <section>
-        <h1>Quadro do sprint</h1>
+        <Cabecalho titulo="Quadro do sprint" sub="Não há nenhum sprint em curso." />
         {mensagem && <p>{mensagem}</p>}
-        <p>Não há nenhum sprint em curso. O Product Owner começa-o em <Link to="/sprint/planear">Planear sprint</Link>.</p>
+        <p>O Product Owner começa-o em <Link to="/sprint/planear">Planear sprint</Link>.</p>
       </section>
     );
   }
@@ -62,35 +63,36 @@ export default function QuadroSprint({ utilizador }) {
 
   const total = quadro.colunas.reduce((soma, c) => soma + c.itens.length, 0);
   const concluidas = quadro.colunas.find((c) => c.estado === "concluido").itens.length;
+  const { inicio, fim } = quadro.sprint;
+  const dias = inicio && fim ? Math.round((new Date(fim) - new Date(inicio)) / 864e5) + 1 : null;
+  const hoje = inicio ? Math.min(dias, Math.max(1, Math.round((Date.now() - new Date(inicio)) / 864e5) + 1)) : null;
+  const dia = dias ? `dia ${hoje} de ${dias} · ` : "";
 
   return (
     <section>
-      <div className="cabecalho">
-        <div>
-          <h1>{quadro.sprint.nome}</h1>
-          <p className="nota">{concluidas} de {total} funcionalidades concluídas · {quadro.sprint.pontos} de {quadro.sprint.capacidade} pontos</p>
-        </div>
-        <div>
-          <label htmlFor="equipa">Equipa</label>
-          <select id="equipa" value={equipa} onChange={(e) => setEquipa(e.target.value)}>
-            <option value="">Todas</option>
-            {equipas.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
-          </select>
-          {utilizador?.papel === "product_owner" && <button className="secundario" onClick={fechar}>Fechar sprint</button>}
-        </div>
-      </div>
+      <Cabecalho
+        titulo={quadro.sprint.nome}
+        sub={`${dia}${concluidas} de ${total} funcionalidades concluídas · ${quadro.sprint.pontos} de ${quadro.sprint.capacidade} pontos`}
+      >
+        <label htmlFor="equipa" className="so-leitor">Equipa</label>
+        <select id="equipa" className="filtro" value={equipa} onChange={(e) => setEquipa(e.target.value)}>
+          <option value="">Equipa: todas</option>
+          {equipas.map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
+        </select>
+        {utilizador?.papel === "product_owner" && <button className="secundario" onClick={fechar}>Fechar sprint</button>}
+      </Cabecalho>
       {erro && <p role="alert">{erro}</p>}
-      <div className="colunas">
+      <div className="quadro-colunas">
         {quadro.colunas.map((coluna) => (
-          <div key={coluna.estado} className="caixa">
-            <strong>{coluna.nome}</strong> <span className="nota">{coluna.itens.length}</span>
+          <div key={coluna.estado} className="painel coluna-quadro">
+            <h2 className="titulo-fita">{coluna.nome} <span className="conta">{coluna.itens.length}</span></h2>
             <ul className="cartoes">
               {coluna.itens.map((item) => (
                 <li key={item.pedido} className="cartao">
                   <Link to={`/pedidos/${item.pedido}`}>{item.titulo}</Link>
-                  <div className="nota">{item.equipa?.nome || "sem equipa"}{item.esforco ? ` · ${item.esforco} pontos` : ""}</div>
+                  <div className="meta-cartao">{item.equipa?.nome || "sem equipa"}{item.esforco ? ` · ${item.esforco} pontos` : ""}</div>
                   {item.pode_mudar_para.map((para) => (
-                    <button key={para} className="secundario" onClick={() => mudar(item.pedido, para)}>→ {ESTADOS[para]}</button>
+                    <button key={para} className="secundario pequeno" onClick={() => mudar(item.pedido, para)}>→ {ESTADOS[para]}</button>
                   ))}
                 </li>
               ))}
