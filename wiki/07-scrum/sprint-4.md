@@ -6,9 +6,17 @@ Datas por confirmar (o enunciado põe o Sprint 4 de 2 a 13 de novembro, e o prof
 
 ## Objetivo
 
-Segundo incremento: priorizar, planear e colaborar dentro do sistema. No fim do sprint, oito ecrãs falam com a API (01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe, 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações), que é o mínimo de interfaces que o enunciado pede para além do login e do CRUD. Também entram a qualidade do código no CI, o desenho de software e o aspeto dos mockups no front-end.
+Segundo incremento: priorizar, planear e colaborar dentro do sistema. No fim do sprint, oito ecrãs falam com a API (01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe, 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações). Tirando o 01 (entrada), são sete ecrãs com mais do que o login e o CRUD: pesquisa e filtros, aviso de pedidos parecidos, histórico de estados e conversa, priorização com IA, planeamento com capacidade, quadro e notificações. Os outros sete ecrãs (08 a 11 e 13 a 15) já estão no código com dados de exemplo e ligam à API no Sprint 5, para a entrega final passar as oito interfaces que o enunciado pede. Também entram a qualidade do código no CI, o desenho de software e o aspeto dos mockups no front-end.
 
 O plano segue a ordem das aulas: construção e qualidade do código, revisões e refactoring, testes e integração contínua.
+
+## O que o professor pediu no fim do Sprint 3
+
+| Pedido | Onde está |
+|---|---|
+| Gestão de versões | Uma versão por sprint: tag no Git e release no GitHub (`v0.3.0`, `v0.4.0`) e a mesma versão no Jira, com os cartões ligados. Commits no formato `tipo(âmbito): descrição`, cada um com a sua conta. Ver [Git e versões](../06-codigo/git.md#versões) ([EDS-184](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-184)). |
+| Automação dos testes | O GitHub Actions corre em cada push o ruff, os testes do servidor com cobertura mínima de 90 % e os testes e a build do front-end ([EDS-165](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-165), [EDS-182](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-182)). Ver [Testes](../06-codigo/testes.md). |
+| Desenvolver o protótipo | Oito ecrãs ligados à API, com três módulos novos no servidor (priorização, backlog e colaboração) e os 15 ecrãs com o aspeto dos mockups. |
 
 ## Sprint backlog
 
@@ -26,8 +34,9 @@ O plano segue a ordem das aulas: construção e qualidade do código, revisões 
 | [EDS-181](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-181) | Aspeto dos mockups no front-end | 3 | Felipe |
 | [EDS-163](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-163) | Mockups acertados com o código | 3 | Felipe |
 | [EDS-183](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-183) | Apresentação oral | 2 | Marcus e Felipe |
+| [EDS-184](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-184) | Gestão de versões: tags, releases e versões no Jira | 2 | Tiago |
 
-São 54 pontos. Os cartões do primeiro incremento ([EDS-166](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-166) a [EDS-171](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-171)) já tinham a base feita no Sprint 3; o que lhes faltava entra no EDS-174 e no EDS-179.
+São 56 pontos. Os cartões do primeiro incremento ([EDS-166](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-166) a [EDS-171](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-171)) já tinham a base feita no Sprint 3; o que lhes faltava entra no EDS-174 e no EDS-179.
 
 ## Como se divide o código
 

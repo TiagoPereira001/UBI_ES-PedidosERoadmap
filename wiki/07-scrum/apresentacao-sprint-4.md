@@ -8,12 +8,12 @@ Antes de começar: `docker compose down -v` e depois `docker compose up --build`
 
 | # | Parte | Quem | Tempo | O que mostrar |
 |---|---|---|---|---|
-| 1 | Objetivo do sprint e o que entregámos | PO | 1 min | O objetivo no Jira e os oito ecrãs ligados à API |
-| 2 | Priorizar | PO | 2,5 min | Entrar como `ricardo`. Ecrã 05: impacto e esforço, mudar a ordem com a razão, o aviso de capacidade, "Pedir sugestão" e a razão de cada sugestão |
-| 3 | Planear e acompanhar o sprint | PO | 2 min | Ecrã 06: o item sem estimativa não entra, a barra de capacidade, "Começar sprint". Ecrã 07: o quadro, a equipa de cada cartão |
+| 1 | Objetivo do sprint e o que entregámos | PO | 1 min | O objetivo no Jira, os oito ecrãs ligados à API e o que o professor pediu no fim do Sprint 3 (versões, testes automáticos, protótipo) |
+| 2 | Priorizar | PO | 2,5 min | Entrar como `ricardo`. Ecrã 05: impacto e esforço, mudar a ordem com a razão, o aviso de capacidade, "Pedir sugestão da IA" e a razão de cada sugestão |
+| 3 | Planear e acompanhar o sprint | PO | 2 min | Antes, como `marta`, aprovar a "Exportação de relatórios em PDF". Ecrã 06: acrescentá-la ao backlog e ver que, sem estimativa, não entra no sprint; a barra de capacidade, "Começar sprint". Ecrã 07: o quadro, a equipa de cada cartão |
 | 4 | Colaborar | PO | 1,5 min | Entrar como `diogo`, comentar com @sofia. Entrar como `sofia`: a notificação e o número no menu |
 | 5 | Como está feito | SM | 2 min | [Desenho de software](../04-arquitetura/desenho.md): três camadas, dependências num só sentido, o sinal das notificações, o adaptador da IA |
-| 6 | Qualidade | SM | 1,5 min | GitHub Actions: ruff, cobertura e testes; o refactoring do sprint |
+| 6 | Qualidade e versões | SM | 1,5 min | GitHub Actions: ruff, cobertura e testes em cada push; o refactoring do sprint; as tags e releases `v0.3.0` e `v0.4.0` no GitHub e as versões no Jira |
 | 7 | Como trabalhámos e reflexão | SM | 1,5 min | Jira (pontos planeados e feitos), commits de cada um, registo de IA, retrospetiva |
 
 Passagem do PO para o SM: "Isto foi o que o sistema já faz. O Felipe explica como está feito e como trabalhámos."
