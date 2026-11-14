@@ -79,7 +79,7 @@ frontend/
 
 ## Ecrãs
 
-Os 15 ecrãs do Figma existem como página. Pedidos, Novo pedido, Detalhe do pedido e Entrar já falam com a API. Os outros mostram dados de exemplo e dizem isso no topo; ligam à API no Sprint 4.
+Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. Os outros sete (08 a 11, 13 a 15) mostram dados de exemplo e dizem isso no topo; ligam à API no Sprint 5.
 
 ## Ver também
 

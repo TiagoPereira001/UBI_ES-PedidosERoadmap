@@ -24,8 +24,10 @@ O Sprint 3 está fechado no Jira; a apresentação dele é na semana de 2 de nov
 - Documento de requisitos não funcionais em LaTeX: `docs/sprint-3/requisitos_nao_funcionais.tex`.
 - Base do código: back-end Django com contas e pedidos, front-end React com os 15 ecrãs e um estilo simples.
 - Docker: `docker compose up --build` levanta o projeto inteiro (PostgreSQL, back-end e front-end) na mesma rede, com o código a recarregar sozinho. Ver [como correr](06-codigo/como-correr.md).
-- Testes automáticos: 31 no back-end e 23 no front-end, todos a passar (também no PostgreSQL, dentro do Docker). Ver [testes](06-codigo/testes.md).
-- Integração contínua (`.github/workflows/ci.yml`) a correr no GitHub em cada push e pull request.
+- Testes automáticos: 99 no back-end e 42 no front-end, todos a passar (também no PostgreSQL, dentro do Docker). Ver [testes](06-codigo/testes.md).
+- Integração contínua (`.github/workflows/ci.yml`) a correr no GitHub em cada push e pull request, com ruff e cobertura mínima de 90 % no back-end.
+- Sprint 4: oito ecrãs ligados à API (01 a 07 e 12). Etiquetas e estados por papel, priorização com impacto, esforço e sugestão de IA, product backlog, sprints e quadro com equipas, comentários, menções e notificações. Ver [estrutura do código](06-codigo/estrutura.md) e [desenho de software](04-arquitetura/desenho.md).
+- O front-end tem o aspeto dos [mockups](03-prototipo/mockups.md), e os mockups 05 e 07 foram acertados com o código.
 
 ## Por fazer (do Sprint 3)
 
@@ -37,7 +39,9 @@ O Sprint 3 está fechado no Jira; a apresentação dele é na semana de 2 de nov
 
 ## Sprint 4
 
-O código do sprint está dividido por módulos, um por pessoa, e entra pela ordem Tiago, Marcus, Rui, João e Felipe ([quem faz o quê](07-scrum/sprint-4.md#como-se-divide-o-código)). Até lá, a lista "Feito" de cima ainda não o inclui.
+O código do sprint está dividido por módulos, um por pessoa, e entrou pela ordem Tiago, Marcus, Rui, João e Felipe ([quem fez o quê](07-scrum/sprint-4.md#como-se-divide-o-código)).
+
+Por fazer no Sprint 4: review e retrospetiva ([EDS-42](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-42), [EDS-43](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-43)) e a apresentação ([EDS-183](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-183)).
 
 ## Decisões em aberto
 
