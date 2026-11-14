@@ -7,8 +7,8 @@
 | 1 | 21 set a 14 out | Equipa, contrato, Jira, produto decidido, primeira proposta de personas, cenários e user stories | Fechado |
 | 2 | 12 a 23 out | Entrevistas no Character.ai, personas e user stories revistas, wireframes | Fechado |
 | 3 | 23 a 26 out | Requisitos não funcionais, arquitetura, modelação, wireframes corrigidos, mockups, base do código | Fechado no Jira; apresentação na semana de 2 nov. Ver [Sprint 3](sprint-3.md) |
-| 4 | por confirmar | Segundo incremento: priorizar, planear e colaborar; oito ecrãs ligados à API | Em curso, ver [Sprint 4](sprint-4.md) |
-| 5 | por confirmar | Restantes interfaces, testes, deploy e entrega final | Planeado |
+| 4 | 2 a 16 de novembro | Segundo incremento: priorizar, planear e colaborar; oito ecrãs ligados à API | Em curso, ver [Sprint 4](sprint-4.md) |
+| 5 | 17 de novembro a 11 de dezembro | Restantes interfaces, testes, deploy e entrega final | Planeado |
 
 As apresentações do Sprint 1 e do Sprint 2 fizeram-se juntas. Cada sprint tem no Jira os registos de Daily, Planning, Review, Retrospetiva e Presenças (epic [EDS-3](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-3)).
 

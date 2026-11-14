@@ -8,7 +8,7 @@ Esta página diz onde o projeto está. Quem mexe no projeto (pessoa ou agente de
 
 ## Sprint em curso
 
-**Sprint 4**, datas por confirmar. Product Owner: Marcus Fernandes. Scrum Master: Felipe Fogaça. Ver [Sprint 4](07-scrum/sprint-4.md).
+**Sprint 4**, de 2 a 16 de novembro (apresentação na segunda-feira, 16). Product Owner: Marcus Fernandes. Scrum Master: Felipe Fogaça. Ver [Sprint 4](07-scrum/sprint-4.md).
 
 Objetivo: segundo incremento. Priorizar, planear e colaborar dentro do sistema, com oito ecrãs ligados à API (01 a 07 e 12), qualidade no CI, desenho de software e o aspeto dos mockups no front-end.
 
@@ -47,8 +47,7 @@ Por fazer no Sprint 4: review e retrospetiva ([EDS-42](https://ubi-team-ebw5rr6y
 
 ## Decisões em aberto
 
-- Datas dos Sprints 4 e 5.
-- Datas do Sprint 4 no Jira (estão as antigas, 23 de novembro a 11 de dezembro).
+- Nenhuma de momento.
 
 ## Onde está cada coisa
 
