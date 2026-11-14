@@ -88,7 +88,8 @@ Este contrato regista o que combinámos para trabalhar juntos durante o projeto 
     \item Em cada sprint há um Product Owner e um Scrum Master, e todos passamos pelos dois papéis.
     \item Decidimos por consenso. Se não der, votamos.
     \item Nada fica feito sem revisão, testes e aceitação do Product Owner.
-    \item Tudo passa por \textit{pull request} para a \texttt{main}.
+    \item Tudo entra na \texttt{main} com os testes automáticos a verde, e cada um faz commit do seu trabalho com a sua conta.
+    \item Cada sprint fecha com uma versão numerada no Git, no GitHub e no Jira.
     \item A IA ajuda, mas cada um responde pelo que entrega, e o uso fica registado.
   \end{itemize}
 \end{tcolorbox}
@@ -139,7 +140,7 @@ Seguimos o Scrum e fazemos as reuniões habituais. As durações são máximos: 
 \renewcommand{\arraystretch}{1}
 \normalsize
 
-No Sprint 5, que dura cinco semanas, fazemos ainda um ponto de situação de 30 minutos a meio, para perceber se estamos dentro do plano.
+No Sprint 5, que dura quatro semanas e acaba na entrega final, fazemos ainda um ponto de situação de 30 minutos a meio, para perceber se estamos dentro do plano.
 
 \subsection{Como registamos no Jira}
 
@@ -168,7 +169,7 @@ O enunciado pede provas de que cumprimos o Scrum, por isso tudo fica escrito na 
 
 \begin{itemize}
   \item Entregar, no fim de cada sprint, um incremento que funcione e apresentá-lo oralmente na última semana do sprint.
-  \item Manter o quadro Jira atualizado (\textit{Product Backlog}, \textit{To Do}, \textit{In Progress}, \textit{Done}, \textit{Artifacts}, \textit{Daily SCRUM} e \textit{Team Contract}), com acesso para o professor.
+  \item Manter o quadro Jira atualizado (\textit{Product Backlog}, \textit{To Do}, \textit{In Progress}, \textit{Done}, \textit{Artifacts}, \textit{Daily SCRUM} e \textit{Team Contract}), com acesso para os docentes. Cada cartão tem responsável, estimativa e, quando há código, os commits num comentário.
   \item Decidir por consenso. Se não chegarmos lá, votamos e vale a maioria, a decisão fica registada no Jira.
   \item Repartir o trabalho de forma justa. O projeto tem \textit{back-end} e \textit{front-end} e a ideia é que toda a gente passe pelos dois, para nos podermos cobrir uns aos outros.
   \item Garantir que todos percebem o que está a ser feito: qualquer um de nós tem de saber explicar o projeto nas apresentações.
@@ -180,7 +181,7 @@ O enunciado pede provas de que cumprimos o Scrum, por isso tudo fica escrito na 
   \item Ir às reuniões e às aulas presenciais.
   \item Fazer as suas tarefas dentro do prazo e mover o cartão no Jira no momento em que o estado muda.
   \item Avisar cedo quando está bloqueado ou vai atrasar-se.
-  \item Rever os \textit{pull requests}.
+  \item Rever o trabalho dos colegas quando lhe pedem, antes de entrar na \texttt{main}.
   \item Cumprir a Definição de Concluído e as regras deste contrato.
 \end{itemize}
 
@@ -214,16 +215,16 @@ Cada elemento é Product Owner uma vez e Scrum Master uma vez, e ninguém tem os
 \renewcommand{\arraystretch}{1.5}
 \begin{tabularx}{\textwidth}{N{1.6cm} L{5.2cm} Y Y}
   \rowcolor{azul} \th{Sprint} & \th{Datas} & \th{Product Owner} & \th{Scrum Master} \\
-  \rowcolor{azulclaro!55} 1 & 21 de setembro a 14 de outubro & Tiago Pereira  & Rui Machado \\
-  \rowcolor{white}        2 & 12 a 30 de outubro             & Felipe Fogaça   & João Vitor \\
-  \rowcolor{azulclaro!55} 3 & 2 a 20 de novembro             & João Vitor      & Marcus Fernandes \\
-  \rowcolor{white}        4 & 23 de novembro a 11 de dezembro & Marcus Fernandes & Felipe Fogaça \\
-  \rowcolor{azulclaro!55} 5 & 14 de dezembro a 15 de janeiro & Rui Machado     & Tiago Pereira \\
+  \rowcolor{azulclaro!55} 1 & 21 de setembro a 14 de outubro & Tiago Pereira    & Rui Machado \\
+  \rowcolor{white}        2 & 12 a 23 de outubro             & Felipe Fogaça    & João Vitor \\
+  \rowcolor{azulclaro!55} 3 & 23 de outubro a 1 de novembro  & João Vitor       & Marcus Fernandes \\
+  \rowcolor{white}        4 & 2 a 15 de novembro             & Marcus Fernandes & Felipe Fogaça \\
+  \rowcolor{azulclaro!55} 5 & 16 de novembro a 11 de dezembro (entrega final) & Rui Machado & Tiago Pereira \\
   \bottomrule
 \end{tabularx}
 \renewcommand{\arraystretch}{1}
 
-Só trocamos de papéis se todos estiverem de acordo, e a troca fica registada no Jira antes do Sprint Planning.
+As datas acompanham as do enunciado, com os ajustes que os docentes deram e que ficaram registados no Jira. Só trocamos de papéis se todos estiverem de acordo, e a troca fica registada no Jira antes do Sprint Planning.
 
 %--------------------------------------------------------------------
 \section{Conflitos}
@@ -274,32 +275,33 @@ Um item só passa a \textit{Done} quando:
 \begin{tcolorbox}[caixa, title={Definição de Concluído}, colback=azulclaro!40]
   \begin{itemize}[label=\textcolor{azul}{$\square$}]
     \item cumpre os critérios de aceitação combinados com o Product Owner;
-    \item o código foi revisto por pelo menos outro elemento da equipa (\textit{pull request} aprovado);
+    \item o código foi revisto por pelo menos outro elemento da equipa;
     \item tem testes (unitários e, quando fizer sentido, de integração) e todos passam;
-    \item está integrado na \texttt{main} sem quebrar o build nem a integração contínua;
+    \item está integrado na \texttt{main} com o GitHub Actions verde: ruff sem avisos, testes a passar e cobertura do servidor de pelo menos 90\,\%;
     \item a documentação necessária está atualizada e os artefactos estão ligados no Jira;
     \item o Product Owner aceitou o item;
-    \item o cartão no Jira está em \textit{Done}, com a ligação para o \textit{pull request}.
+    \item o cartão no Jira está em \textit{Done}, com o responsável e os commits num comentário.
   \end{itemize}
 \end{tcolorbox}
 
-\subsection{Uso do GitHub}
+\subsection{Uso do GitHub e versões}
 
-Temos um repositório da equipa, ligado no Jira na secção \textit{Artifacts}. Trabalhamos na \texttt{main}. Cada tarefa sai numa branch à parte e volta por \textit{pull request}.
+Temos um repositório da equipa, ligado no Jira na secção \textit{Artifacts}. Há uma só branch, a \texttt{main}. Cada um faz commit e \textit{push} do seu trabalho com a sua conta, por isso o histórico do GitHub mostra quem fez o quê.
 
 \small
 \renewcommand{\arraystretch}{1.5}
 \begin{tabularx}{\textwidth}{N{4.9cm} Y}
-  \rowcolor{azul} \th{Branch} & \th{Para que serve} \\
-  \rowcolor{azulclaro!55} \texttt{main} & Onde está o trabalho da equipa. Os \textit{pull requests} entram aqui. \\
-  \rowcolor{white} \texttt{feature/EDS-13-personas} & Uma por tarefa, criada a partir da \texttt{main}, com a chave do cartão do Jira no nome. \\
+  \rowcolor{azul} \th{O quê} & \th{Como fazemos} \\
+  \rowcolor{azulclaro!55} Mensagens de commit & Formato \texttt{tipo(âmbito): descrição}, sem emojis, em português e curtas. Por exemplo: \texttt{feat(pedidos): aviso de pedidos parecidos}. Os tipos estão na wiki (\texttt{06-codigo/git.md}). \\
+  \rowcolor{white} Testes automáticos & Em cada \textit{push}, o GitHub Actions corre o ruff, os testes do servidor com cobertura mínima de 90\,\% e os testes e a build do front-end. \\
+  \rowcolor{azulclaro!55} Versões & Cada sprint fecha com uma versão \texttt{v0.<sprint>.0}: uma tag no Git, uma release no GitHub com o que entrou e a mesma versão no Jira, com os cartões ligados. A entrega final é a \texttt{v1.0.0}. \\
   \bottomrule
 \end{tabularx}
 \renewcommand{\arraystretch}{1}
 \normalsize
 
 \begin{itemize}
-  \item Fazemos commits pequenos e frequentes, com mensagens curtas que digam o que mudou.
+  \item Fazemos commits pequenos e frequentes. Um commit faz uma coisa só.
   \item Passwords, chaves de API e dados pessoais não entram no repositório.
   \item Antes de começar a trabalhar fazemos \textit{pull} da \texttt{main}.
   \item Se a integração contínua falhar, corrigir isso passa à frente do resto.
@@ -310,7 +312,7 @@ Temos um repositório da equipa, ligado no Jira na secção \textit{Artifacts}. 
 O projeto incentiva o uso de ferramentas de IA e nós vamos usá-las, mas com regras:
 
 \begin{itemize}
-  \item A equipa escolhe pelo menos uma ferramenta de IA para apoiar a programação e regista no Jira qual é.
+  \item A ferramenta de IA para apoiar a programação é o Claude Code (Anthropic), registada no Jira (EDS-12). Os requisitos são levantados com o Character.ai, como pede o enunciado.
   \item A IA ajuda, mas não decide por nós. Só entra no projeto o que percebemos e conseguimos explicar nas apresentações: cada um responde pelo que entrega.
   \item O que for gerado por IA é revisto e testado como qualquer outro código ou texto, e passa pela mesma Definição de Concluído.
   \item Não pomos passwords, chaves, dados pessoais nem informação que não possamos partilhar em ferramentas de IA.
@@ -321,7 +323,7 @@ O projeto incentiva o uso de ferramentas de IA e nós vamos usá-las, mas com re
 %--------------------------------------------------------------------
 \section{Alterações e confirmação}
 
-Revemos este contrato nas retrospetivas. Qualquer alteração precisa da concordância de todos e fica registada no Jira. Ao assinar, cada elemento da equipa confirma que leu o contrato e que está de acordo.
+Revemos este contrato nas retrospetivas. Qualquer alteração precisa da concordância de todos e fica registada no Jira. A última revisão, a 14 de novembro de 2026, acertou as datas dos sprints, as regras do GitHub (uma só branch, mensagens de commit sem emojis, testes automáticos e uma versão por sprint) e a ferramenta de IA escolhida. Ao assinar, cada elemento da equipa confirma que leu o contrato e que está de acordo.
 
 \vspace{0.4em}
 \begin{tabularx}{\textwidth}{Y@{\hspace{1.4cm}}Y}
