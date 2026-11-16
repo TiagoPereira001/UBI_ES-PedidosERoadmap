@@ -30,6 +30,7 @@ Quem chega agora lê primeiro o [estado atual](currentstate.md). Quem vai mexer 
 - [Arquitetura](04-arquitetura/arquitetura.md)
 - [Registo de decisões](04-arquitetura/decisoes.md)
 - [Desenho de software](04-arquitetura/desenho.md)
+- [IA no sistema](04-arquitetura/ia.md)
 
 ## 5. Modelação
 
@@ -53,6 +54,8 @@ Quem chega agora lê primeiro o [estado atual](currentstate.md). Quem vai mexer 
 - [Apresentação do Sprint 3](07-scrum/apresentacao-sprint-3.md)
 - [Sprint 4](07-scrum/sprint-4.md)
 - [Apresentação do Sprint 4](07-scrum/apresentacao-sprint-4.md)
+- [Sprint 5](07-scrum/sprint-5.md)
+- [Apresentação final](07-scrum/apresentacao-sprint-5.md)
 
 ## Fora da wiki
 
