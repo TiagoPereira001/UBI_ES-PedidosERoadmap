@@ -34,7 +34,7 @@ Os requisitos vieram de entrevistas às cinco personas no Character.ai (Sofia, M
 
 ## A aplicação
 
-Já funcionam os pedidos: criar, procurar, votar, ver o histórico e mudar o estado. Os outros ecrãs dos wireframes existem com dados de exemplo e ligam-se à API nos próximos sprints.
+Oito ecrãs já falam com a API: entrar, pedidos (com pesquisa, aviso de parecidos, votos e histórico de estados), priorização com sugestão de IA, planeamento do sprint, quadro do sprint e notificações. Os outros sete (roadmap, release, gerar user stories, rastreabilidade, espaço da equipa, dashboard e carga das equipas) ainda mostram dados de exemplo e ligam-se à API no Sprint 5.
 
 <table>
   <tr>
@@ -43,7 +43,7 @@ Já funcionam os pedidos: criar, procurar, votar, ver o histórico e mudar o est
   </tr>
   <tr>
     <td><b>Novo pedido.</b> Enquanto se escreve o título aparecem os pedidos parecidos, para votar em vez de duplicar.</td>
-    <td><b>Detalhe do pedido.</b> Votos, histórico de estados e, para quem gere o produto, a mudança de estado.</td>
+    <td><b>Detalhe do pedido.</b> Votos, histórico de estados, conversa e, para quem gere o produto, a mudança de estado.</td>
   </tr>
   <tr>
     <td><img src="docs/imagens/app-priorizacao.png" alt="Ecrã de priorização com sugestão da IA"></td>
@@ -83,7 +83,11 @@ Ao arrancar são criadas contas de teste, uma por papel. A palavra-passe é o no
 | `helena` | `helena123` | Gestor de projeto |
 | `admin` | `admin123` | Administrador (painel em `/admin/`) |
 
-São contas só para desenvolvimento. Para correr sem Docker (com SQLite) e para mais comandos, ver [como correr](wiki/06-codigo/como-correr.md) e [testes](wiki/06-codigo/testes.md).
+São contas só para desenvolvimento.
+
+A sugestão de prioridade usa um serviço de IA só se houver uma chave: `GEMINI_API_KEY` (Gemini, tem plano gratuito) ou `ANTHROPIC_API_KEY` (Claude), num ficheiro `.env` na raiz, que nunca vai para o Git. Sem chave, usa uma regra local e a aplicação funciona na mesma. Ver [IA no sistema](wiki/04-arquitetura/ia.md).
+
+Para correr sem Docker (com SQLite) e para mais comandos, ver [como correr](wiki/06-codigo/como-correr.md) e [testes](wiki/06-codigo/testes.md).
 
 ## Arquitetura
 
@@ -241,7 +245,7 @@ Ecrãs 08, 11, 13, 14 e 15.
 | 2 | 12 a 23 out | Felipe Fogaça | João Vitor | Entrevistas às cinco personas no Character.ai, personas e user stories revistas, wireframes |
 | 3 | 23 a 26 out | João Vitor | Marcus Fernandes | Requisitos não funcionais, arquitetura, modelação UML, wireframes corrigidos, base do código, testes, CI e Docker |
 | 4 | 2 a 16 nov | Marcus Fernandes | Felipe Fogaça | Priorizar, planear e colaborar: oito ecrãs ligados à API, sugestão de prioridade com IA, qualidade no CI e o aspeto dos mockups |
-| 5 | 17 nov a 11 dez | Rui Machado | Tiago Pereira | Restantes interfaces, testes, deploy e entrega final |
+| 5 | 17 nov a 11 dez | Rui Machado | Tiago Pereira | Em curso: os sete ecrãs que faltam, IA com Gemini, refactoring, deploy e entrega final (`v1.0.0`) |
 
 Cada um é Product Owner uma vez e Scrum Master uma vez, nunca os dois no mesmo sprint. A apresentação oral é no fim de cada sprint. A do Sprint 1 e a do Sprint 2 fizeram-se juntas, porque é o mesmo produto.
 
@@ -249,7 +253,7 @@ Cada um é Product Owner uma vez e Scrum Master uma vez, nunca os dois no mesmo 
 
 | Pasta | O que é |
 |---|---|
-| `backend/` | API em Django REST Framework (módulos `contas` e `pedidos`) e os seus testes |
+| `backend/` | API em Django REST Framework, um módulo por área (`contas`, `pedidos`, `priorizacao`, `backlog`, `colaboracao`) e a ligação à IA (`ia`), com os testes |
 | `frontend/` | Aplicação React com os 15 ecrãs dos wireframes e os seus testes |
 | `docker-compose.yml` | Levanta o projeto inteiro: PostgreSQL, back-end e front-end na mesma rede |
 | `.github/workflows/` | Integração contínua: corre os testes em cada push e pull request |
@@ -259,6 +263,7 @@ Cada um é Product Owner uma vez e Scrum Master uma vez, nunca os dois no mesmo 
 | `docs/sprint-1/` | Análise do produto: papéis, sete áreas, personas, cenários e user stories |
 | `docs/sprint-2/` | Guião das entrevistas no Character.ai e primeiros rascunhos dos ecrãs |
 | `docs/sprint-3/` | Wireframes em PNG, diagramas em Mermaid e requisitos não funcionais |
+| `docs/sprint-5/apresentacao/` | Diapositivos da apresentação final em LaTeX (Beamer), prontos para o Overleaf |
 | `docs/imagens/` | Imagens deste README |
 | `docs/guia-jira/` | Guia para usar o nosso Jira |
 | `docs/registo-ia/` | Onde registamos o uso de IA |

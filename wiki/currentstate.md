@@ -2,17 +2,17 @@
 
 [Índice](README.md) · [Visão do produto →](01-produto/visao.md)
 
-Última atualização: 14 de novembro de 2026, Sprint 4.
+Última atualização: 16 de novembro de 2026, início do Sprint 5.
 
 Esta página diz onde o projeto está. Quem mexe no projeto (pessoa ou agente de IA) atualiza-a quando alguma coisa muda.
 
 ## Sprint em curso
 
-**Sprint 4**, de 2 a 16 de novembro (apresentação na segunda-feira, 16). Product Owner: Marcus Fernandes. Scrum Master: Felipe Fogaça. Ver [Sprint 4](07-scrum/sprint-4.md).
+**Sprint 5**, de 17 de novembro a 11 de dezembro (quatro semanas, acaba na entrega final). Product Owner: Rui Machado. Scrum Master: Tiago Pereira. Ver [Sprint 5](07-scrum/sprint-5.md).
 
-Objetivo: segundo incremento. Priorizar, planear e colaborar dentro do sistema, com oito ecrãs ligados à API (01 a 07 e 12), qualidade no CI, desenho de software e o aspeto dos mockups no front-end.
+Objetivo: a versão `v1.0.0`. Os sete ecrãs que ainda usam dados de exemplo (08 a 11 e 13 a 15) passam a falar com a API: roadmap e releases, geração de user stories e rastreabilidade, espaço de equipa e métricas. Entram também a edição com versões dos pedidos, a IA com o Gemini, o refactoring, o deploy automático, o manual e a [apresentação final](07-scrum/apresentacao-sprint-5.md) em LaTeX.
 
-O Sprint 3 está fechado no Jira; a apresentação dele é na semana de 2 de novembro ([guião](07-scrum/apresentacao-sprint-3.md)).
+O Sprint 4 fechou a 16 de novembro com a apresentação e a versão `v0.4.0`.
 
 ## Feito
 
@@ -28,26 +28,20 @@ O Sprint 3 está fechado no Jira; a apresentação dele é na semana de 2 de nov
 - Integração contínua (`.github/workflows/ci.yml`) a correr no GitHub em cada push e pull request, com ruff e cobertura mínima de 90 % no back-end.
 - Sprint 4: oito ecrãs ligados à API (01 a 07 e 12). Etiquetas e estados por papel, priorização com impacto, esforço e sugestão de IA, product backlog, sprints e quadro com equipas, comentários, menções e notificações. Ver [estrutura do código](06-codigo/estrutura.md) e [desenho de software](04-arquitetura/desenho.md).
 - O front-end tem o aspeto dos [mockups](03-prototipo/mockups.md), e os mockups 05 e 07 foram acertados com o código.
+- Sprint 5, no arranque: a ligação à IA passou para `backend/ia/`, com o Gemini e o Claude atrás do mesmo cliente e a regra local quando não há chave. Ver [IA no sistema](04-arquitetura/ia.md). Os diapositivos da apresentação final estão em `docs/sprint-5/apresentacao/`.
 
-## Por fazer (do Sprint 3)
+## Por fazer
 
-- Rever, compilar no Overleaf e aceitar o documento de requisitos não funcionais ([EDS-159](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-159)).
-- Mockups dos ecrãs 01 a 04 ([EDS-163](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-163)).
-- Escrever o documento de arquitetura em LaTeX para `docs/sprint-3/` ([EDS-153](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-153)), a partir de [arquitetura](04-arquitetura/arquitetura.md).
+- Registos das cerimónias que ficaram vazios: Sprint 3 ([EDS-36](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-36) a [EDS-39](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-39), [EDS-21](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-21)) e Sprint 4 ([EDS-40](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-40) a [EDS-43](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-43), [EDS-22](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-22)). Quem esteve escreve o que se passou.
+- Recompilar o PDF do contrato no Overleaf e anexá-lo ao [EDS-1](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-1).
+- Compilar no Overleaf o documento de requisitos não funcionais (`docs/sprint-3/requisitos_nao_funcionais.tex`, [EDS-159](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-159)).
+- A arquitetura está na wiki ([arquitetura](04-arquitetura/arquitetura.md)), mas ainda não há um documento em LaTeX em `docs/` ([EDS-153](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-153)).
 - Proteger a `main` no GitHub (só o Tiago tem permissões).
-- Review e retrospetiva do Sprint 3. A apresentação ([EDS-173](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-173)) passou para a semana de 2 de novembro, dia ainda por confirmar.
-
-## Sprint 4
-
-O código do sprint está dividido por módulos, um por pessoa, e entrou pela ordem Tiago, Marcus, Rui, João e Felipe ([quem fez o quê](07-scrum/sprint-4.md#como-se-divide-o-código)).
-
-Cada sprint passou a fechar com uma versão numerada no Git, no GitHub e no Jira (`v0.3.0`, `v0.4.0`), a pedido do professor no fim do Sprint 3. Ver [versões](06-codigo/git.md#versões).
-
-Por fazer no Sprint 4: review e retrospetiva ([EDS-42](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-42), [EDS-43](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-43)) e a apresentação ([EDS-183](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-183)).
+- O resto está no [Sprint 5](07-scrum/sprint-5.md).
 
 ## Decisões em aberto
 
-- Nenhuma de momento.
+- Se usamos uma chave do Gemini na apresentação final. Sem chave, a sugestão usa a regra local e tudo funciona na mesma ([D8](04-arquitetura/decisoes.md#d8-gemini-e-claude-atrás-do-mesmo-cliente-16112026)).
 
 ## Onde está cada coisa
 
@@ -63,5 +57,5 @@ Por fazer no Sprint 4: review e retrospetiva ([EDS-42](https://ubi-team-ebw5rr6y
 ## Ver também
 
 - [Índice da wiki](README.md)
-- [Sprint 3](07-scrum/sprint-3.md)
+- [Sprint 5](07-scrum/sprint-5.md)
 - [AGENTS.md](../AGENTS.md)

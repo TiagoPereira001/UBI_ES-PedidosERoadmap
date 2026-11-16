@@ -2,7 +2,7 @@
 
 [Índice](../README.md) · [← Apresentação do Sprint 3](apresentacao-sprint-3.md) · [Apresentação do Sprint 4 →](apresentacao-sprint-4.md)
 
-De 2 a 16 de novembro; a apresentação é na segunda-feira, 16 de novembro. Product Owner: Marcus Fernandes. Scrum Master: Felipe Fogaça.
+De 2 a 16 de novembro; a apresentação foi na segunda-feira, 16 de novembro, e o sprint fechou nesse dia com a versão `v0.4.0`. Product Owner: Marcus Fernandes. Scrum Master: Felipe Fogaça.
 
 ## Objetivo
 
