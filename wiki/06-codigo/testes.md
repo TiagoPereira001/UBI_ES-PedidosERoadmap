@@ -41,7 +41,7 @@ cd backend
 
 ## O que já está testado
 
-**Back-end (99 testes):**
+**Back-end (118 testes):**
 
 - um pedido nasce Novo e fica no histórico;
 - o cliente não escolhe a origem; o product manager sim;
@@ -60,9 +60,13 @@ cd backend
 - API: criar precisa de login, título curto é recusado, pesquisa e filtros juntam-se, os votos mostram só o total, o cliente não muda o estado;
 - contas: quem se regista fica cliente, a palavra-passe fica com hash, o erro de entrada não diz o que falhou;
 - dados de exemplo: um utilizador por papel, pedidos com histórico e votos, a palavra-passe é o nome mais 123, há um admin, e correr duas vezes não duplica;
-- origem do front-end: a API aceita os POST vindos de `localhost:5173` (o proxy do Vite, também no Docker) e recusa os de outra origem.
+- origem do front-end: a API aceita os POST vindos de `localhost:5173` (o proxy do Vite, também no Docker) e recusa os de outra origem;
+- ligação à IA (pasta `ia/`): escolhe o Gemini ou o Claude pela chave que houver, e sem chave não chama nada; o pedido ao Gemini leva o modelo, o tempo limite e o esquema da resposta; respostas cortadas ou que não são JSON são recusadas;
+- a chave de IA está protegida: vai só no cabeçalho do pedido (nunca no endereço nem no corpo), e com chave errada, sem quota (429) ou sem rede a sugestão usa a regra local sem a chave aparecer na resposta nem nos registos;
+- nenhum ficheiro que vai para o GitHub tem uma chave de API, o `.env` está no `.gitignore`, o `docker-compose.yml` lê as chaves do `.env` por variável e o `.env.example` não traz chaves preenchidas. No contentor do Docker não há Git, por isso estes três primeiros saltam lá e correm no GitHub Actions;
+- sem login lê-se o que é público, mas nenhum pedido de escrita passa, e as notificações, as pessoas e a sugestão da IA pedem login.
 
-**Front-end (42 testes):**
+**Front-end (53 testes):**
 
 - o menu tem os ecrãs dos wireframes;
 - Novo pedido mostra os parecidos com um botão de votar em cada um e não procura com menos de 4 letras;
@@ -72,6 +76,9 @@ cd backend
 - conversa e notificações: autor e data em cada comentário, só os meus têm editar e apagar, @ sugere nomes, sem conta lê-se mas não se comenta; as notificações dizem o pedido e o novo estado, quantas estão por ler, e cada um escolhe o que recebe; o menu mostra quantas estão por ler;
 - planear sprint e quadro: o item sem estimativa diz porque não entra, a capacidade usada aparece com o aviso, só o Product Owner planeia, começa e fecha o sprint, e no quadro cada cartão só tem os botões que o servidor deixa;
 - priorização: aviso de capacidade, só o Product Owner muda a ordem, o programador estima só o esforço, a sugestão mostra a razão e deixa manter a ordem, e guardar envia a ordem nova com a razão;
+- a sugestão diz que serviço de IA a fez (Gemini ou Claude), ou que veio da regra local;
+- a porta para o servidor (`api.js`) manda o token CSRF e o corpo em JSON, põe os filtros no endereço, devolve os erros com a mensagem do servidor e nunca pede nada fora de `/api/`;
+- as iniciais, o nome de cada papel e as datas ("hoje", "ontem", dia e mês);
 - os ecrãs que ainda usam dados de exemplo abrem e avisam disso;
 - o que as personas pediram está nos ecrãs: aviso de capacidade e razão da IA (Ricardo), itens sem estimativa ou critérios marcados (Ricardo), release em risco e entrega contratual, tarefas paradas e carga por tipo (Helena).
 
