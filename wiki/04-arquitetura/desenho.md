@@ -1,6 +1,6 @@
 # Desenho de software
 
-[Índice](../README.md) · [← Registo de decisões](decisoes.md) · [Casos de uso →](../05-modelacao/casos-de-uso.md)
+[Índice](../README.md) · [← Registo de decisões](decisoes.md) · [IA no sistema →](ia.md)
 
 Cartão: [EDS-161](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-161). A [arquitetura](arquitetura.md) diz que peças há; esta página diz como cada peça está feita por dentro e como as peças falam umas com as outras.
 
@@ -45,7 +45,7 @@ flowchart LR
 | Camada de serviços | `servicos.py` de cada módulo | As regras ficam num só sítio e testam-se sem HTTP |
 | Tabela de regras | `QUEM_PODE` em `pedidos/servicos.py` | As passagens de estado e quem as faz leem-se como o diagrama de estados. As transições permitidas (`TRANSICOES`) saem da mesma tabela, para não haver duas listas a manter |
 | O servidor diz o que se pode fazer | `pode_mudar_para` no detalhe do pedido e nos cartões do quadro | O ecrã mostra só os botões que o papel pode usar, sem repetir as regras no front-end |
-| Adaptador com alternativa | `priorizacao/ia.py` | Só um ficheiro fala com o serviço de IA. Se falhar, usa-se a regra local e a priorização continua (decisão D4) |
+| Adaptador com alternativa | `ia/cliente.py`, `priorizacao/ia.py` | Só a pasta `ia/` fala com os serviços de IA (Gemini ou Claude). Quem a usa tem uma alternativa: se não houver chave ou a IA falhar, a priorização usa a regra local e continua (decisões D4 e D8) |
 | Observador (sinais do Django) | `colaboracao/sinais.py` | Os avisos de mudança de estado não obrigam `pedidos` a conhecer a colaboração |
 | Uma só porta para o servidor | `frontend/src/api.js` | Os ecrãs não chamam `fetch`. O CSRF e os erros tratam-se num sítio |
 

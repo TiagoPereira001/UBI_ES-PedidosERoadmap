@@ -9,7 +9,7 @@ extend-exclude = ["*/migrations/*"]
 select = ["E", "F", "W", "I", "B", "UP"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["config", "contas", "pedidos", "priorizacao", "backlog", "colaboracao"]
+known-first-party = ["config", "contas", "pedidos", "priorizacao", "backlog", "colaboracao", "ia"]
 
 [tool.coverage.run]
 source = ["."]

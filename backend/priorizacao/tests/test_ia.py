@@ -4,6 +4,7 @@ from unittest import mock
 
 from django.test import SimpleTestCase
 
+from ia import cliente as servico_ia
 from priorizacao import ia
 
 ITENS = [
@@ -32,32 +33,30 @@ class RegraLocal(SimpleTestCase):
         self.assertIn("sem estimativa", sugestoes[0].razao)
 
 
-@mock.patch.dict("os.environ", {"ANTHROPIC_API_KEY": "chave-de-teste"})
 class ComIA(SimpleTestCase):
     def test_usa_a_resposta_da_ia(self):
-        with mock.patch.object(ia, "_pedir_ao_claude", return_value=RESPOSTA_IA):
-            sugestoes, fonte = ia.sugerir(ITENS)
-        self.assertEqual(fonte, "ia")
+        with mock.patch.object(servico_ia, "pedir_json", return_value=({"sugestoes": RESPOSTA_IA}, "gemini")):
+            sugestoes, fonte, servico = ia.sugerir(ITENS)
+        self.assertEqual((fonte, servico), ("ia", "gemini"))
         self.assertEqual([s.pedido_id for s in sugestoes], [2, 1, 3])
 
     def test_se_a_ia_falhar_usa_a_regra_local(self):
-        with mock.patch.object(ia, "_pedir_ao_claude", side_effect=TimeoutError("sem resposta")):
+        with mock.patch.object(servico_ia, "pedir_json", side_effect=TimeoutError("sem resposta")):
             with self.assertLogs("priorizacao.ia", level="WARNING"):
-                sugestoes, fonte = ia.sugerir(ITENS)
-        self.assertEqual(fonte, "regra local")
+                sugestoes, fonte, servico = ia.sugerir(ITENS)
+        self.assertEqual((fonte, servico), ("regra local", None))
         self.assertEqual(len(sugestoes), 3)
 
     def test_resposta_incompleta_da_ia_nao_e_aceite(self):
-        with mock.patch.object(ia, "_pedir_ao_claude", return_value=RESPOSTA_IA[:2]):
+        with mock.patch.object(servico_ia, "pedir_json", return_value=({"sugestoes": RESPOSTA_IA[:2]}, "claude")):
             with self.assertLogs("priorizacao.ia", level="WARNING"):
-                _, fonte = ia.sugerir(ITENS)
+                _, fonte, _ = ia.sugerir(ITENS)
         self.assertEqual(fonte, "regra local")
 
 
 class SemChave(SimpleTestCase):
     @mock.patch.dict("os.environ", {}, clear=True)
-    def test_sem_chave_nem_tenta_a_ia(self):
-        with mock.patch.object(ia, "_pedir_ao_claude") as pedir:
-            _, fonte = ia.sugerir(ITENS)
-        pedir.assert_not_called()
-        self.assertEqual(fonte, "regra local")
+    def test_sem_chave_usa_a_regra_local_sem_avisos(self):
+        with self.assertNoLogs("priorizacao.ia", level="WARNING"):
+            _, fonte, servico = ia.sugerir(ITENS)
+        self.assertEqual((fonte, servico), ("regra local", None))

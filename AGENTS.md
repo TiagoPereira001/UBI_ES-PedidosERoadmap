@@ -39,6 +39,7 @@ cd frontend && npm run dev
 - **Cada alteração de código traz testes.** Corre os testes do back-end e do front-end antes de abrir o pull request.
 - **Não inventes requisitos.** Personas, cenários e user stories vêm das entrevistas no Character.ai e estão no Jira. Se faltar informação, pergunta à equipa.
 - **Nunca ponhas palavras-passe, chaves de API nem o `.env`** no repositório.
+- **Os serviços de IA só se chamam através de `backend/ia/cliente.py`**, e quem os usa tem sempre uma alternativa local para quando não há chave ou a IA falha. Os testes nunca chamam a IA a sério. Ver [IA no sistema](wiki/04-arquitetura/ia.md).
 - **Uma branch por cartão** (`feature/EDS-nn-nome`) e pull request revisto por outra pessoa. Ver [Git e pull requests](wiki/06-codigo/git.md).
 - **Cada pessoa faz commit do seu trabalho com a sua conta.** Não se fazem commits em nome de outra pessoa.
 - **Mensagens de commit no formato `tipo(âmbito): descrição`**, sem emojis ([Conventional Commits](https://www.conventionalcommits.org/pt-br)). Por exemplo: `feat(pedidos): aviso de pedidos parecidos`. A tabela dos tipos está em [Git e pull requests](wiki/06-codigo/git.md#mensagens-de-commit).

@@ -49,6 +49,14 @@ Cada decisão importante fica aqui, com o contexto e as alternativas. Uma decis�
 - **Decisão:** segue um pedido quem o pediu, quem votou nele e quem comentou. Os avisos de mudança de estado chegam por um sinal do Django, e não por uma chamada direta de `pedidos` à colaboração. O email usa as definições do Django; em desenvolvimento aparece no terminal do back-end.
 - **Consequência:** não é preciso guardar uma lista de seguidores. Se um dia houver um botão "seguir", acrescenta-se como mais uma fonte de seguidores em `colaboracao/servicos.py`.
 
+## D8. Gemini e Claude atrás do mesmo cliente (16/11/2026)
+
+- **Contexto:** a API do Claude é paga à parte e a equipa não tem chave. O Gemini, da Google, tem um plano gratuito. No Sprint 5 a geração de user stories (US-18) também vai precisar de IA.
+- **Decisão:** a ligação aos serviços de IA passou para uma pasta própria, `backend/ia/`, com um ficheiro por serviço (`gemini.py`, `claude.py`) e um `cliente.py` que escolhe qual usar. Usa o que tiver chave (`GEMINI_API_KEY` ou `ANTHROPIC_API_KEY`); com as duas, o Gemini; `IA_FORNECEDOR` obriga a um deles. Quem precisa de IA (priorização e, no Sprint 5, requisitos) chama só `ia.cliente.pedir_json` e continua a ter a sua regra local.
+- **Alternativas:** só o Claude (pago); só o Gemini (deixava de lado o código que já funcionava); usar o pacote oficial da Google (mais uma dependência, quando o pedido é um só POST que a biblioteca padrão do Python faz).
+- **Consequências:** trocar de serviço é mudar uma variável de ambiente. Sem chave nenhuma, tudo funciona como antes. Substitui a parte de D4 que dizia que o serviço era o Claude. Ver [IA no sistema](ia.md).
+
 ## Ver também
 
+- [IA no sistema](ia.md)
 - [Arquitetura](arquitetura.md)

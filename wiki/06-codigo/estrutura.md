@@ -16,9 +16,14 @@ backend/
   priorizacao/       módulo Priorização
     models.py        Estimativa (impacto, esforço, lugar na ordem) e AlteracaoOrdem
     servicos.py      regras: estimar, ordenar, lista com o aviso de capacidade
-    ia.py            sugestão de prioridade: Claude, ou regra local quando a IA falha
+    ia.py            sugestão de prioridade: pede à IA (pasta ia/) ou usa a regra local
     api.py           endpoints /api/priorizacao/
     tests/           testes das regras, da IA (sem a chamar) e da API
+  ia/                ligação aos serviços de IA (Gemini e Claude); ver 04-arquitetura/ia.md
+    cliente.py       escolhe o serviço pela chave que houver e devolve a resposta em JSON
+    gemini.py        Gemini (Google), pela API REST
+    claude.py        Claude (Anthropic), pelo pacote anthropic
+    tests/           testes da escolha do serviço e do pedido ao Gemini (sem rede)
   backlog/           módulo Product backlog
     models.py        Equipa, Sprint, ItemBacklog
     servicos.py      regras: acrescentar ao backlog, criar, começar e fechar sprints, pôr no sprint, quadro, equipas

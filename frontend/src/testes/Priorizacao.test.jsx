@@ -26,8 +26,8 @@ const SUGESTAO = {
   ],
 };
 
-function abrir(papel) {
-  const fetchFalso = simularApi({ "/priorizacao/": LISTA, "/priorizacao/sugestao/": SUGESTAO, "/priorizacao/ordem/": LISTA });
+function abrir(papel, sugestao = SUGESTAO) {
+  const fetchFalso = simularApi({ "/priorizacao/": LISTA, "/priorizacao/sugestao/": sugestao, "/priorizacao/ordem/": LISTA });
   render(<MemoryRouter><Priorizacao utilizador={papel && { username: "x", papel }} /></MemoryRouter>);
   return fetchFalso;
 }
@@ -57,6 +57,13 @@ describe("priorização", () => {
     expect(await screen.findByText(/Razão: Impacto alto/)).toBeTruthy();
     expect(screen.getByText(/regra local/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Manter a minha ordem" })).toBeTruthy();
+  });
+
+  it("diz que serviço de IA fez a sugestão", async () => {
+    abrir("product_owner", { ...SUGESTAO, fonte: "ia", servico: "gemini" });
+    fireEvent.click(await screen.findByRole("button", { name: "Pedir sugestão da IA" }));
+    expect(await screen.findByText(/Sugestão feita pelo Gemini \(Google\)/)).toBeTruthy();
+    expect(screen.queryByText(/regra local/)).toBeNull();
   });
 
   it("mudar a ordem e guardar envia a ordem nova com a razão", async () => {

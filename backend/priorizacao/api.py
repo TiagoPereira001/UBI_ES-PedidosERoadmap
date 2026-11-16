@@ -103,11 +103,12 @@ class Sugestao(APIView):
             {"id": p.id, "titulo": p.titulo, "votos": p.total_votos, "impacto": p.impacto, "esforco": p.esforco}
             for p in itens
         ]
-        sugestoes, fonte = ia.sugerir(dados)
+        sugestoes, fonte, servico = ia.sugerir(dados)
         titulos = {p.id: p.titulo for p in itens}
         return Response(
             {
                 "fonte": fonte,
+                "servico": servico,
                 "sugestoes": [dict(ia.como_dict(s), titulo=titulos[s.pedido_id]) for s in sugestoes],
                 "ordem_sugerida": [s.pedido_id for s in sugestoes],
             }

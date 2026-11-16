@@ -2,21 +2,20 @@
 
 O resto do sistema só chama `sugerir`. Por trás há duas formas de fazer a sugestão:
 
-- o Claude (API da Anthropic), quando há uma chave em ANTHROPIC_API_KEY;
+- um serviço de IA (Gemini ou Claude), através de `ia.cliente`, quando há uma chave configurada;
 - uma regra local, sem rede, que usa os mesmos dados (votos, impacto e esforço).
 
-Se o Claude não responder dentro do tempo limite, recusar ou devolver algo que não
+Se o serviço de IA não responder dentro do tempo limite, recusar ou devolver algo que não
 bate certo, usa-se a regra local. Assim a priorização nunca fica parada à espera da IA
 (decisão D4 em wiki/04-arquitetura/decisoes.md). A sugestão é sempre só uma sugestão:
 nada muda sem o Product Owner aceitar.
 """
 
-import json
 import logging
-import os
 from dataclasses import asdict, dataclass
 
-from django.conf import settings
+from ia import cliente as servico_ia
+from ia.erros import RespostaInvalida, SemIA
 
 logger = logging.getLogger(__name__)
 
@@ -61,10 +60,6 @@ class Sugestao:
     razao: str
 
 
-class RespostaInvalida(Exception):
-    """O serviço de IA respondeu, mas não com o que pedimos."""
-
-
 def _pontos(item, mais_votos):
     """Valor por ponto de esforço. Sem estimativa, conta como esforço médio (5) e impacto baixo."""
     impacto = item["impacto"] or 1
@@ -102,27 +97,6 @@ def sugerir_local(itens):
     return sugestoes
 
 
-def _pedir_ao_claude(itens):
-    """Pede a sugestão ao Claude com saída estruturada (JSON validado pelo esquema de cima)."""
-    import anthropic  # só se importa quando há chave, para a regra local não depender do pacote
-
-    cliente = anthropic.Anthropic(timeout=settings.IA_TEMPO_LIMITE, max_retries=0)
-    resposta = cliente.beta.messages.create(
-        model=settings.IA_MODELO,
-        max_tokens=16000,
-        # Se o modelo recusar, a API tenta outro modelo na mesma chamada.
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",
-        output_config={"effort": "low", "format": {"type": "json_schema", "schema": ESQUEMA}},
-        system=INSTRUCOES,
-        messages=[{"role": "user", "content": json.dumps(itens, ensure_ascii=False)}],
-    )
-    if resposta.stop_reason != "end_turn":
-        raise RespostaInvalida(f"O serviço de IA parou com '{resposta.stop_reason}'.")
-    texto = next(bloco.text for bloco in resposta.content if bloco.type == "text")
-    return json.loads(texto)["sugestoes"]
-
-
 def _validar(dados, itens):
     ids = {i["id"] for i in itens}
     sugestoes = [Sugestao(int(d["pedido_id"]), d["nivel"], d["razao"].strip()) for d in dados]
@@ -134,15 +108,20 @@ def _validar(dados, itens):
 
 
 def sugerir(itens):
-    """Devolve (sugestões pela ordem recomendada, fonte). A fonte é 'ia' ou 'regra local'."""
+    """Devolve (sugestões pela ordem recomendada, fonte, serviço).
+
+    A fonte é 'ia' ou 'regra local'; o serviço é 'gemini', 'claude' ou None.
+    """
     if not itens:
-        return [], "regra local"
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        try:
-            return _validar(_pedir_ao_claude(itens), itens), "ia"
-        except Exception:  # noqa: BLE001 - qualquer falha da IA leva à regra local
-            logger.warning("A sugestão da IA falhou; usei a regra local.", exc_info=True)
-    return sugerir_local(itens), "regra local"
+        return [], "regra local", None
+    try:
+        resposta, servico = servico_ia.pedir_json(INSTRUCOES, itens, ESQUEMA)
+        return _validar(resposta["sugestoes"], itens), "ia", servico
+    except SemIA:
+        pass
+    except Exception:  # noqa: BLE001 - qualquer falha da IA leva à regra local
+        logger.warning("A sugestão da IA falhou; usei a regra local.", exc_info=True)
+    return sugerir_local(itens), "regra local", None
 
 
 def como_dict(sugestao):
