@@ -31,7 +31,9 @@ Qualquer módulo que precise de IA faz o mesmo que a priorização: chama `pedir
 | `ANTHROPIC_API_KEY` | Claude |
 | As duas | Gemini, a não ser que `IA_FORNECEDOR=claude` |
 
-O modelo de cada serviço também se escolhe por variável: `GEMINI_MODELO` (por omissão `gemini-2.5-flash`) e `IA_MODELO` (por omissão `claude-opus-5-5`). Antes de usar, confirmar no site da Google que o modelo ainda existe e quais são os limites do plano gratuito, porque mudam com frequência.
+O modelo de cada serviço também se escolhe por variável: `GEMINI_MODELO` e `IA_MODELO` (por omissão `claude-opus-5-5`).
+
+Para o Gemini usamos por omissão o `gemini-3.5-flash-lite`: é o modelo mais barato e o que tem mais pedidos por dia no plano gratuito (em novembro de 2026, cerca de 500 por dia, contra 20 do Gemini 3.8 Flash). Para sugerir uma ordem ou escrever user stories chega. Os limites gratuitos mudam com frequência e contam por projeto e por modelo; os números certos estão no Google AI Studio.
 
 ## Ligar uma chave
 

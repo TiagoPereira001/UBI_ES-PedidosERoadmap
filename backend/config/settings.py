@@ -109,7 +109,8 @@ CAPACIDADE_SPRINT = int(os.environ.get("CAPACIDADE_SPRINT", "15"))
 # Serviços de IA (pasta ia/). Só se usam se houver chave: GEMINI_API_KEY ou ANTHROPIC_API_KEY.
 # Sem nenhuma, a priorização usa a regra local. IA_FORNECEDOR ("gemini" ou "claude") obriga a um deles.
 IA_FORNECEDOR = os.environ.get("IA_FORNECEDOR", "")
-GEMINI_MODELO = os.environ.get("GEMINI_MODELO", "gemini-2.5-flash")
+# Flash-Lite: o modelo mais barato do Gemini e o que tem mais pedidos por dia no plano gratuito.
+GEMINI_MODELO = os.environ.get("GEMINI_MODELO", "gemini-3.5-flash-lite")
 IA_MODELO = os.environ.get("IA_MODELO", "claude-opus-5-5")
 IA_TEMPO_LIMITE = float(os.environ.get("IA_TEMPO_LIMITE", "20"))
 
