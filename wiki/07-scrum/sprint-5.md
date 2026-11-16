@@ -8,16 +8,57 @@ De 17 de novembro a 11 de dezembro (quatro semanas, como diz o enunciado). É o 
 
 Entregar a versão `v1.0.0`: os sete ecrãs que ainda usam dados de exemplo (08 a 11 e 13 a 15) passam a falar com a API, e com eles ficam cobertas as sete áreas do enunciado. A edição e as versões dos pedidos, o refactoring, o deploy automático, o manual e a apresentação final fecham o projeto.
 
-## O que o enunciado pede para o fim
+## O enunciado, ponto por ponto
 
-| O enunciado | Onde fica |
+Verificado a 16 de novembro contra o `SE_Project.pdf`. "Parte 1" e "parte 2" são as duas metades do trabalho de cada um neste sprint (ver [Como se divide o código](#como-se-divide-o-código)).
+
+### Restrições
+
+| O enunciado pede | Estado |
 |---|---|
-| Pelo menos oito interfaces além do CRUD e do login | Hoje há sete ligadas (02 a 07 e 12). Com o Sprint 5 ficam catorze, todas além do login (01). |
-| As sete áreas de funcionalidades | Faltam Roadmap (08, 09), Requisitos (10, 11), espaço de equipa (13) e Dashboards (14, 15), e a edição com versões nos Pedidos |
-| "AI-assisted prioritization" e "automatic generation of User Stories" | A IA passa a estar numa pasta própria, `backend/ia/`, com Gemini e Claude, e serve as duas. Ver [IA no sistema](../04-arquitetura/ia.md) |
-| "Continuous integration and deployment" | A integração contínua já existe; entra o deploy automático das imagens Docker |
-| "Programming and Refactoring" | Um cartão só para refactoring, com o antes e o depois na wiki |
-| Apresentação oral na última semana | Apresentação final em LaTeX (Beamer), com o projeto todo e o Sprint 5 |
+| Back-end e front-end, com frameworks modernos | Cumprido: Django REST Framework e React |
+| Pode integrar serviços de terceiros (APIs) | Cumprido: Gemini ou Claude para a IA, opcionais ([IA no sistema](../04-arquitetura/ia.md)) |
+| Pelo menos 8 interfaces além do CRUD e do login | Em curso: hoje há 7 ligadas à API (02 a 07 e 12); com a parte 1 ficam 11 (mais 08, 10, 13, 14); no fim, 14 |
+| Estilo arquitetural justificado, com wireframes e mockups | Cumprido ([D1](../04-arquitetura/decisoes.md), Figma). Falta acertar os mockups dos ecrãs 08, 10, 13 e 14 com o que o código mostra agora (por exemplo, o 13 tem a conversa da equipa) |
+| Tudo no Jira, com acesso para os docentes | Jira atualizado. **Por confirmar** que os dois docentes têm acesso ao site |
+| Requisitos levantados com o Character.ai | Cumprido: cinco entrevistas ([EDS-55](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-55)) |
+| Pelo menos uma ferramenta de IA para programar | Cumprido: Claude Code ([EDS-12](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-12)) e o Registo de Uso de IA |
+| Rotação de Scrum Master e de Product Owner, documentada | Cumprido: contrato, [EDS-1](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-1), objetivo de cada sprint no Jira e [Equipa e papéis](equipa-e-papeis.md) |
+| Presença de todos nas aulas | **Falta registar**: os cartões de presenças dos Sprints 3, 4 e 5 ([EDS-21](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-21) a [EDS-23](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-23)) estão vazios |
+
+### Quadros do Jira
+
+| O enunciado pede | Estado |
+|---|---|
+| Product Backlog, To Do, In Progress, Done | Cumprido: backlog e as colunas A fazer, Fazendo, Feito |
+| Artifacts: links para wireframes, mockups, diagramas, GitHub e documentos | Cumprido: epic [EDS-2](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-2), com uma tabela de todos os artefactos (atualizada a 16/11) |
+| SCRUM: provas de daily, planning, review e retrospetiva | **Falta**: só o Daily do Sprint 1 ([EDS-4](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-4)) tem registos. Os cartões de Planning, Review e Retrospetiva de todos os sprints estão com o modelo por preencher, alguns já marcados como Feito. Vale 15 % da nota (C1) |
+| Team Contract | Cumprido: EDS-1, página no Confluence e `docs/contrato/`. Falta recompilar o PDF no Overleaf |
+
+### Funcionalidades das sete áreas
+
+| Área | Feito | Parte 1 | Parte 2 |
+|---|---|---|---|
+| Pedidos | Submeter, categorizar e etiquetar, pesquisar e filtrar | | Editar e ver versões ([EDS-186](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-186)) |
+| Priorização | Ordem do Product Owner, votos, sugestão com IA, impacto e esforço | | |
+| Product backlog | Product backlog, sprint backlog, estados, atribuir a equipas | | |
+| Roadmap | | Roadmap visual e releases (ecrã 08) | Ecrã 09, milestones e dependências |
+| Requisitos | | Gerar user stories com critérios (ecrã 10) | Rastreabilidade (ecrã 11) e marcar critérios cumpridos |
+| Colaboração | Comentários, notificações, menções | Espaço de cada equipa (ecrã 13) | |
+| Dashboards | | Submetidos, aprovados e rejeitados, por release, lead time, cycle time (ecrã 14) | Carga das equipas e progresso do roadmap (ecrã 15) |
+
+### Metodologia e resultados
+
+| O enunciado pede | Estado |
+|---|---|
+| Cinco sprints, o último de quatro semanas, apresentação oral em cada um | Cumprido |
+| Personas, cenários e user stories | Cumprido |
+| Protótipo (wireframes) | Cumprido |
+| Arquitetura e desenho de software | Cumprido |
+| Modelação: casos de uso, classes, atividades, sequência | Cumprido |
+| Mockups | Cumprido (falta acertar os ecrãs novos, ver acima) |
+| Programação e refactoring | Programação em curso; refactoring na parte 2 ([EDS-192](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-192)) |
+| Testes, integração e entrega contínuas | Testes e integração contínua cumpridos; deploy automático por fazer ([EDS-196](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-196)) |
 
 ## Sprint backlog
 
@@ -60,7 +101,7 @@ Cada módulo novo segue o desenho que já existe ([desenho de software](../04-ar
 
 - Sprint 4 fechado no Jira e Sprint 5 iniciado, com os cartões acima e a versão `v1.0.0` no Jira.
 - [EDS-185](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-185): a pasta `backend/ia/` com o Gemini e o Claude atrás do mesmo cliente. Sem chave tudo continua com a regra local; com `GEMINI_API_KEY` usa o Gemini. O ecrã 05 diz que serviço fez a sugestão. Ainda não decidimos se vamos usar mesmo uma chave.
-- [EDS-197](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-197): os diapositivos da apresentação final em `docs/sprint-5/apresentacao/`, com as partes do Sprint 5 por fechar no fim.
+- [EDS-197](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-197): os diapositivos da apresentação final (5 minutos, 9 diapositivos) em `docs/sprint-5/apresentacao/`, com o que falta acontecer marcado a laranja.
 
 ## Calendário
 
