@@ -7,7 +7,7 @@ from django.conf import settings
 from .erros import RespostaInvalida
 
 
-def tem_chave():
+def disponivel():
     return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 

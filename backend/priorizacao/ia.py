@@ -2,7 +2,7 @@
 
 O resto do sistema só chama `sugerir`. Por trás há duas formas de fazer a sugestão:
 
-- um serviço de IA (Gemini ou Claude), através de `ia.cliente`, quando há uma chave configurada;
+- um serviço de IA (Gemma 4 no LM Studio, Gemini ou Claude), através de `ia.cliente`, quando há um configurado;
 - uma regra local, sem rede, que usa os mesmos dados (votos, impacto e esforço).
 
 Se o serviço de IA não responder dentro do tempo limite, recusar ou devolver algo que não
@@ -110,7 +110,7 @@ def _validar(dados, itens):
 def sugerir(itens):
     """Devolve (sugestões pela ordem recomendada, fonte, serviço).
 
-    A fonte é 'ia' ou 'regra local'; o serviço é 'gemini', 'claude' ou None.
+    A fonte é 'ia' ou 'regra local'; o serviço é 'lmstudio', 'gemini', 'claude' ou None.
     """
     if not itens:
         return [], "regra local", None

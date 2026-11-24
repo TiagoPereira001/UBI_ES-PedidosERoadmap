@@ -30,8 +30,10 @@ services:
       POSTGRES_DB: pedidos
       POSTGRES_USER: pedidos
       POSTGRES_PASSWORD: pedidos-dev
-      # Opcional: chaves de IA, lidas do terminal ou de um ficheiro .env na raiz (nunca vai para o Git).
-      # Sem nenhuma, a sugestão de prioridade usa a regra local. Ver wiki/04-arquitetura/ia.md.
+      # Opcional: serviço de IA, lido do terminal ou de um ficheiro .env na raiz (nunca vai para o Git).
+      # Sem nenhum, usa-se a regra local. Ver wiki/04-arquitetura/ia.md.
+      LMSTUDIO_URL: ${LMSTUDIO_URL:-}
+      LMSTUDIO_API_KEY: ${LMSTUDIO_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       IA_FORNECEDOR: ${IA_FORNECEDOR:-}

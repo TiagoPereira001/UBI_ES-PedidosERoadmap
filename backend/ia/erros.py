@@ -1,5 +1,5 @@
 class SemIA(Exception):
-    """Não há nenhum serviço de IA configurado (falta a chave)."""
+    """Não há nenhum serviço de IA configurado."""
 
 
 class RespostaInvalida(Exception):

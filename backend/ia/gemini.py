@@ -15,7 +15,7 @@ from .erros import RespostaInvalida
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
 
 
-def tem_chave():
+def disponivel():
     return bool(os.environ.get("GEMINI_API_KEY"))
 
 

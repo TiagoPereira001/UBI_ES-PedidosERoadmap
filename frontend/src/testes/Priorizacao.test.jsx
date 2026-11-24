@@ -60,9 +60,9 @@ describe("priorização", () => {
   });
 
   it("diz que serviço de IA fez a sugestão", async () => {
-    abrir("product_owner", { ...SUGESTAO, fonte: "ia", servico: "gemini" });
+    abrir("product_owner", { ...SUGESTAO, fonte: "ia", servico: "lmstudio" });
     fireEvent.click(await screen.findByRole("button", { name: "Pedir sugestão da IA" }));
-    expect(await screen.findByText(/Sugestão feita pelo Gemini \(Google\)/)).toBeTruthy();
+    expect(await screen.findByText(/Sugestão feita pelo Gemma 4 \(local, no LM Studio\)/)).toBeTruthy();
     expect(screen.queryByText(/regra local/)).toBeNull();
   });
 

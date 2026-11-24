@@ -8,6 +8,13 @@ const PAPEIS = {
   gestor_projeto: "Gestor de projeto",
 };
 
+// Quem fez a sugestão da IA, com o nome que o servidor devolve em "servico".
+export const SERVICOS_IA = {
+  lmstudio: "Gemma 4 (local, no LM Studio)",
+  gemini: "Gemini (Google)",
+  claude: "Claude (Anthropic)",
+};
+
 export const nomeDoPapel = (papel) => PAPEIS[papel] || papel;
 
 // Duas letras para o círculo de cada pessoa ("sofia" dá "SO", "Diogo Martins" dá "DM").

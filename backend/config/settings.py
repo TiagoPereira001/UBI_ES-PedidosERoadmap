@@ -106,9 +106,13 @@ USE_TZ = True
 # Priorização (US-06 e US-08)
 # Capacidade do sprint usada no aviso de capacidade, enquanto não há um sprint a planear.
 CAPACIDADE_SPRINT = int(os.environ.get("CAPACIDADE_SPRINT", "15"))
-# Serviços de IA (pasta ia/). Só se usam se houver chave: GEMINI_API_KEY ou ANTHROPIC_API_KEY.
-# Sem nenhuma, a priorização usa a regra local. IA_FORNECEDOR ("gemini" ou "claude") obriga a um deles.
+# Serviços de IA (pasta ia/). Só se usam se forem configurados: LMSTUDIO_URL (modelo local, sem chave),
+# GEMINI_API_KEY ou ANTHROPIC_API_KEY. Sem nenhum, usa-se a regra local.
+# IA_FORNECEDOR ("lmstudio", "gemini" ou "claude") obriga a um deles.
 IA_FORNECEDOR = os.environ.get("IA_FORNECEDOR", "")
+LMSTUDIO_URL = os.environ.get("LMSTUDIO_URL", "")
+LMSTUDIO_MODELO = os.environ.get("LMSTUDIO_MODELO", "google/gemma-4-e4b")
+LMSTUDIO_TEMPO_LIMITE = float(os.environ.get("LMSTUDIO_TEMPO_LIMITE", "60"))
 # Flash-Lite: o modelo mais barato do Gemini e o que tem mais pedidos por dia no plano gratuito.
 GEMINI_MODELO = os.environ.get("GEMINI_MODELO", "gemini-3.5-flash-lite")
 IA_MODELO = os.environ.get("IA_MODELO", "claude-opus-5-5")

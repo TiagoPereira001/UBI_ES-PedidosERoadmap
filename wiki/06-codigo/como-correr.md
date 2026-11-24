@@ -41,7 +41,7 @@ docker compose logs -f backend                         # ver o que o back-end es
 Cada push na `main` com os testes verdes publica duas imagens no GitHub ([EDS-196](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-196)), com as etiquetas `latest` e o hash do commit. Com testes vermelhos não se publica nada. O workflow usa só o `GITHUB_TOKEN` que o GitHub cria para cada execução; não há nenhuma chave guardada.
 
 ```bash
-docker login ghcr.io          # utilizador do GitHub e um token com read:packages (o repositório é privado)
+docker login ghcr.io          # utilizador do GitHub e um token com read:packages (enquanto as imagens forem privadas)
 docker compose -f docker-compose.publicado.yml up
 VERSAO=<hash do commit> docker compose -f docker-compose.publicado.yml up    # uma versão certa
 ```

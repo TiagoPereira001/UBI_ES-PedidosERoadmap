@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import Cabecalho from "../componentes/Cabecalho.jsx";
-import { quando } from "../componentes/formatos.js";
+import { SERVICOS_IA, quando } from "../componentes/formatos.js";
 
 const ORDENS = [
   ["manual", "Ordem do Product Owner"],
@@ -20,7 +20,6 @@ function mover(lista, de, para) {
 }
 
 // Ecrã 05. A ordem é do Product Owner; a IA só sugere, e diz sempre porquê (Ricardo, US-06, US-08, US-09).
-const SERVICOS = { gemini: "Gemini (Google)", claude: "Claude (Anthropic)" };
 
 export default function Priorizacao({ utilizador }) {
   const [ordem, setOrdem] = useState("manual");
@@ -189,7 +188,7 @@ export default function Priorizacao({ utilizador }) {
               <div className="postit">
                 <h2 className="titulo-mao">Sugestão da IA</h2>
                 {sugestao.fonte === "ia" ? (
-                  <p className="nota-postit">Sugestão feita pelo {SERVICOS[sugestao.servico] ?? "serviço de IA"}. Só muda a ordem se a aceitares.</p>
+                  <p className="nota-postit">Sugestão feita pelo {SERVICOS_IA[sugestao.servico] ?? "serviço de IA"}. Só muda a ordem se a aceitares.</p>
                 ) : (
                   <p className="nota-postit">O serviço de IA não está disponível. Esta sugestão foi feita com a regra local (votos, impacto e esforço).</p>
                 )}

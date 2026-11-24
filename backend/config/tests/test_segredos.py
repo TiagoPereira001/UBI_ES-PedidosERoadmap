@@ -14,9 +14,11 @@ from django.test import SimpleTestCase
 
 RAIZ = Path(settings.BASE_DIR).parent
 
-# Formatos das chaves da Google (antigo e novo) e da Anthropic.
-CHAVES = re.compile(r"AIza[0-9A-Za-z_\-]{35}|\bAQ\.[0-9A-Za-z_\-]{30,}|sk-ant-[0-9A-Za-z_\-]{20,}")
-VARIAVEIS = ["GEMINI_API_KEY", "ANTHROPIC_API_KEY"]
+# Formatos das chaves da Google (antigo e novo), da Anthropic e do LM Studio.
+CHAVES = re.compile(
+    r"AIza[0-9A-Za-z_\-]{35}|\bAQ\.[0-9A-Za-z_\-]{30,}|sk-ant-[0-9A-Za-z_\-]{20,}|sk-lm-[0-9A-Za-z_\-]{8,}"
+)
+VARIAVEIS = ["LMSTUDIO_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY"]
 
 
 def ficheiros_no_git():

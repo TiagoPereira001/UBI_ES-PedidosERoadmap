@@ -4,20 +4,20 @@ import json
 
 from django.conf import settings
 
-from . import claude, gemini
+from . import claude, gemini, lmstudio
 from .erros import RespostaInvalida, SemIA
 
-# Por esta ordem: sem IA_FORNECEDOR, usa-se o primeiro que tiver chave.
-FORNECEDORES = {"gemini": gemini, "claude": claude}
+# Por esta ordem: sem IA_FORNECEDOR, usa-se o primeiro que estiver configurado. O local vem antes dos da rede.
+FORNECEDORES = {"lmstudio": lmstudio, "gemini": gemini, "claude": claude}
 
 
 def fornecedor():
-    """Nome do serviço a usar ('gemini' ou 'claude'), ou None se não houver nenhum com chave."""
+    """Nome do serviço a usar ('lmstudio', 'gemini' ou 'claude'), ou None se nenhum estiver configurado."""
     escolhido = settings.IA_FORNECEDOR
     if escolhido:
         modulo = FORNECEDORES.get(escolhido)
-        return escolhido if modulo and modulo.tem_chave() else None
-    return next((nome for nome, modulo in FORNECEDORES.items() if modulo.tem_chave()), None)
+        return escolhido if modulo and modulo.disponivel() else None
+    return next((nome for nome, modulo in FORNECEDORES.items() if modulo.disponivel()), None)
 
 
 def pedir_json(instrucoes, dados, esquema):
@@ -28,7 +28,7 @@ def pedir_json(instrucoes, dados, esquema):
     """
     nome = fornecedor()
     if nome is None:
-        raise SemIA("Não há nenhuma chave de IA configurada.")
+        raise SemIA("Não há nenhum serviço de IA configurado.")
     texto = FORNECEDORES[nome].pedir(instrucoes, json.dumps(dados, ensure_ascii=False), esquema)
     try:
         return json.loads(texto), nome

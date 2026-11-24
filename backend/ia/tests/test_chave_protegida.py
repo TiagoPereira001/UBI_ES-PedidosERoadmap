@@ -16,7 +16,7 @@ def erro_http(codigo):
     return urllib.error.HTTPError(gemini.URL.format(modelo="m"), codigo, "Erro", {}, io.BytesIO(b"{}"))
 
 
-@override_settings(IA_FORNECEDOR="", GEMINI_MODELO="m")
+@override_settings(IA_FORNECEDOR="", LMSTUDIO_URL="", GEMINI_MODELO="m")
 @mock.patch.dict("os.environ", {"GEMINI_API_KEY": CHAVE}, clear=True)
 class ChaveProtegida(Dados, TestCase):
     def setUp(self):
