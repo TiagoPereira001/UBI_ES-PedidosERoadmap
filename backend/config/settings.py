@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "priorizacao",
     "backlog",
     "colaboracao",
+    "roadmap",
 ]
 
 MIDDLEWARE = [
