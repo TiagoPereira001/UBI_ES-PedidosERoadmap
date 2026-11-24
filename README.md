@@ -273,21 +273,22 @@ As personas, os cenários e as user stories revistas depois das entrevistas est�
 
 ## Como trabalhamos no Git
 
-Há uma branch, a `main`. Cada tarefa sai numa branch à parte, com a chave do cartão do Jira, e volta por pull request revisto por outra pessoa da equipa.
+Trabalhamos na única branch, `main`. Antes de começar, atualiza-a:
 
 ```bash
 git switch main
 git pull
-git switch -c feature/EDS-166-contas
 ```
 
-As mensagens de commit seguem os [Conventional Commits](https://www.conventionalcommits.org/pt-br), sem emojis: `tipo(âmbito): descrição`, com a chave do cartão do Jira no rodapé.
+Cada pessoa faz commit e push do seu trabalho com a sua conta. Depois do push, um colega revê o trabalho. Não usamos pull requests. Os testes correm antes do push e o GitHub Actions tem de ficar verde depois dele.
+
+As mensagens de commit seguem os [Conventional Commits](https://www.conventionalcommits.org/pt-br), sem emojis: `tipo(âmbito): descrição`.
 
 ```bash
-git commit -m "feat(pedidos): aviso de pedidos parecidos" -m "Refs: EDS-169"
+git commit -m "feat(pedidos): aviso de pedidos parecidos"
 ```
 
-A chave vai em maiúsculas na branch, no rodapé do commit e no título do pull request. Palavras-passe reais e chaves de API não entram no repositório. A tabela dos tipos está em [Git e pull requests](wiki/06-codigo/git.md#mensagens-de-commit).
+Palavras-passe reais e chaves de API não entram no repositório. Se a IA ajudou, regista-se em `docs/registo-ia/registo_uso_ia.tex`. A tabela dos tipos está em [Git e versões](wiki/06-codigo/git.md#mensagens-de-commit).
 
 Cada sprint fecha com uma versão numerada: uma tag no Git (`v0.3.0`, `v0.4.0`...) e uma release no GitHub com o que entrou. Ver [Versões](wiki/06-codigo/git.md#versões).
 

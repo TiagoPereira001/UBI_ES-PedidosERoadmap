@@ -1,14 +1,13 @@
-# Git e pull requests
+# Git, commits e versões
 
 [Índice](../README.md) · [← Testes](testes.md) · [Equipa e papéis →](../07-scrum/equipa-e-papeis.md)
 
-- Há uma branch principal, a `main`.
-- Cada cartão do Jira tem a sua branch: `feature/EDS-164-ambiente`.
-- Cada pessoa faz commit do seu próprio trabalho, com a sua conta. É o histórico do Git que mostra quem fez o quê.
+- Há uma só branch: `main`. Antes de começar, atualiza-a com `git pull`.
+- Cada pessoa faz commit e push do seu trabalho com a sua conta. O histórico do Git mostra quem fez o quê.
 - Mensagens de commit no formato da secção [Mensagens de commit](#mensagens-de-commit), mais abaixo.
-- O trabalho volta à `main` por pull request. Outra pessoa revê e aprova.
-- O GitHub Actions tem de estar verde.
-- Se a IA ajudou, diz-se no pull request para quê, e acrescenta-se uma linha ao registo de uso de IA (`docs/registo-ia/registo_uso_ia.tex`).
+- Depois do push, um colega revê o trabalho. Não usamos pull requests.
+- Corre os testes antes do push; depois dele, o GitHub Actions tem de ficar verde.
+- Se a IA ajudou, acrescenta uma linha ao registo de uso de IA (`docs/registo-ia/registo_uso_ia.tex`).
 - Palavras-passe e chaves nunca entram no repositório.
 
 A definição de concluído completa está no epic [EDS-158](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-158).
@@ -16,7 +15,6 @@ A definição de concluído completa está no epic [EDS-158](https://ubi-team-eb
 ```bash
 git switch main
 git pull
-git switch -c feature/EDS-167-submeter-pedido
 ```
 
 ## Mensagens de commit

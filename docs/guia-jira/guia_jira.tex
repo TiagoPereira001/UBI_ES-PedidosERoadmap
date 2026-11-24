@@ -242,7 +242,7 @@ Os cartões têm etiquetas para filtrar: \textit{scrum}, \textit{presencas}, \te
 
 \begin{itemize}
   \item \textbf{A fazer:} está no sprint, mas ainda ninguém pegou nele.
-  \item \textbf{Fazendo:} alguém está a trabalhar nele. Fica aqui até o \textit{pull request} ser aprovado e integrado.
+  \item \textbf{Fazendo:} alguém está a trabalhar nele. Fica aqui até o trabalho ser revisto por um colega e integrado na \texttt{main}.
   \item \textbf{Feito:} cumpre a nossa Definição de Concluído e o Product Owner aceitou.
 \end{itemize}
 
@@ -286,7 +286,7 @@ Só passes um cartão a \textit{Feito} quando:
 
 \begin{itemize}[label=\textcolor{azul}{$\square$}]
   \item cumpre os critérios de aceitação combinados com o Product Owner;
-  \item o código foi revisto por outra pessoa da equipa (\textit{pull request} aprovado);
+  \item o código foi revisto por outra pessoa da equipa;
   \item tem testes e eles passam;
   \item está integrado na \texttt{main} sem quebrar nada;
   \item a documentação está atualizada e o Product Owner aceitou.
@@ -349,21 +349,20 @@ Quem falta também escreve o seu contributo no Jira nesse dia, como diz o contra
 %--------------------------------------------------------------------
 \section{Jira e GitHub juntos}
 
-Cada cartão tem uma chave, por exemplo \texttt{EDS-13}. Se a escrevermos nos sítios certos, o Jira liga o trabalho ao cartão e a equipa percebe o que foi feito para cada coisa. A única branch do repositório é a \texttt{main}.
+Cada cartão tem uma chave, por exemplo \texttt{EDS-13}. Regista-a no Jira para a equipa perceber o que foi feito. Trabalhamos todos na única branch do repositório, a \texttt{main}; antes de começar, faz \texttt{git pull}.
 
 \begin{itemize}
-  \item \textbf{Branch:} uma por cartão, a começar pela chave em maiúsculas: \texttt{feature/EDS-13-personas}.
-  \item \textbf{Commit:} mensagem no formato dos padrões de commits, \texttt{:emoji: tipo(âmbito): descrição}, com a chave do cartão no rodapé. Por exemplo: \texttt{:books: docs(wiki): personas revistas}, e na linha de baixo \texttt{Refs: EDS-13}. A tabela dos tipos está na wiki, em \texttt{wiki/06-codigo/git.md}.
-  \item \textbf{Pull request:} a chave vai no título e a descrição diz o que foi feito. Outra pessoa da equipa revê antes de integrar.
+  \item \textbf{Commit:} cada pessoa regista o seu trabalho com a sua conta, no formato \texttt{tipo(âmbito): descrição}, sem emojis. Por exemplo: \texttt{docs(wiki): personas revistas}. A tabela dos tipos está na wiki, em \texttt{wiki/06-codigo/git.md}.
+  \item \textbf{Push e revisão:} corre os testes, faz push com a tua conta e pede a um colega que reveja o trabalho. Não usamos pull requests; o GitHub Actions tem de ficar verde depois do push.
+  \item \textbf{Uso de IA:} regista-o em \texttt{docs/registo-ia/registo\_uso\_ia.tex}.
 \end{itemize}
 
 \begin{codigo}
 git switch main\\
 git pull\\
-git switch -c feature/EDS-13-personas
 \end{codigo}
 
-A chave tem de estar em maiúsculas (\texttt{EDS-13}, e não \texttt{eds-13}). Passwords, chaves de API e dados pessoais nunca entram no repositório.
+No Jira, escreve a chave em maiúsculas (\texttt{EDS-13}, e não \texttt{eds-13}). Passwords, chaves de API e dados pessoais nunca entram no repositório.
 
 %--------------------------------------------------------------------
 \section{Se és Product Owner ou Scrum Master}

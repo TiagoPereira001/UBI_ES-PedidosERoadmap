@@ -36,15 +36,14 @@ cd frontend && npm run dev
 - **Português de Portugal** no código visível ao utilizador, nos nomes do domínio (Pedido, Voto, MudancaEstado), nos commits e na documentação.
 - **Os mesmos nomes em todo o lado.** Os estados de um pedido são os da US-12: Novo, Em análise, Aprovado, Rejeitado, Em desenvolvimento, Em revisão, Concluído. Se mudares um nome, muda-o no código, nos diagramas e na wiki.
 - **As regras do negócio ficam em `servicos.py`**, não na API nem nos ecrãs. A API só trata do HTTP.
-- **Cada alteração de código traz testes.** Corre os testes do back-end e do front-end antes de abrir o pull request.
+- **Cada alteração de código traz testes.** Corre os testes do back-end e do front-end antes do push.
 - **Não inventes requisitos.** Personas, cenários e user stories vêm das entrevistas no Character.ai e estão no Jira. Se faltar informação, pergunta à equipa.
 - **Nunca ponhas palavras-passe, chaves de API nem o `.env`** no repositório.
 - **Os serviços de IA só se chamam através de `backend/ia/cliente.py`**, e quem os usa tem sempre uma alternativa local para quando não há chave ou a IA falha. Os testes nunca chamam a IA a sério. Ver [IA no sistema](wiki/04-arquitetura/ia.md).
-- **Uma branch por cartão** (`feature/EDS-nn-nome`) e pull request revisto por outra pessoa. Ver [Git e pull requests](wiki/06-codigo/git.md).
-- **Cada pessoa faz commit do seu trabalho com a sua conta.** Não se fazem commits em nome de outra pessoa.
-- **Mensagens de commit no formato `tipo(âmbito): descrição`**, sem emojis ([Conventional Commits](https://www.conventionalcommits.org/pt-br)). Por exemplo: `feat(pedidos): aviso de pedidos parecidos`. A tabela dos tipos está em [Git e pull requests](wiki/06-codigo/git.md#mensagens-de-commit).
+- **Trabalha-se na única branch, `main`.** Antes de começar, faz `git pull`; cada pessoa faz commit e push do seu trabalho com a sua conta. Não se fazem commits em nome de outra pessoa. Depois do push, um colega revê o trabalho. Não usamos pull requests. Ver [Git e versões](wiki/06-codigo/git.md).
+- **Mensagens de commit no formato `tipo(âmbito): descrição`**, sem emojis ([Conventional Commits](https://www.conventionalcommits.org/pt-br)). Por exemplo: `feat(pedidos): aviso de pedidos parecidos`. A tabela dos tipos está em [Git e versões](wiki/06-codigo/git.md#mensagens-de-commit).
 - **Cada sprint fecha com uma versão** (tag `v0.<sprint>.0` e release no GitHub). Ver [Versões](wiki/06-codigo/git.md#versões).
-- **Regista o uso de IA.** Se uma ferramenta de IA escreveu ou mudou alguma coisa, diz-se no pull request e acrescenta-se uma linha a `docs/registo-ia/registo_uso_ia.tex`.
+- **Regista o uso de IA.** Se uma ferramenta de IA escreveu ou mudou alguma coisa, acrescenta-se uma linha a `docs/registo-ia/registo_uso_ia.tex`.
 - **Atualiza o [estado atual](wiki/currentstate.md)** quando acabares algo que mude o que lá está.
 
 ## Onde está cada coisa
