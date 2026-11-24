@@ -47,3 +47,12 @@ class ApiRoadmap(Dados, TestCase):
     def test_detalhe(self):
         resposta = self.client.get(f"/api/roadmap/releases/{self.release.id}/")
         self.assertEqual(resposta.data["nome"], "Release 1.0")
+
+    def test_detalhe_traz_aprovados_ordenados_por_titulo(self):
+        self.aprovado("Zeta tarde")
+        self.aprovado("Alfa cedo")
+        resposta = self.client.get(f"/api/roadmap/releases/{self.release.id}/")
+        aprovados = resposta.data["aprovados"]
+        self.assertEqual([p["titulo"] for p in aprovados], sorted(p["titulo"] for p in aprovados))
+        self.assertTrue(all(set(p) == {"id", "titulo"} for p in aprovados))
+        self.assertIn("Alfa cedo", [p["titulo"] for p in aprovados])
