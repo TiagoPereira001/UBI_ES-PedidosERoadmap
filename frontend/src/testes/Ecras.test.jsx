@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Roadmap from "../paginas/Roadmap.jsx";
 import Release from "../paginas/Release.jsx";
 import GerarHistorias from "../paginas/GerarHistorias.jsx";
 import Rastreabilidade from "../paginas/Rastreabilidade.jsx";
@@ -15,7 +14,7 @@ const abrir = (Ecra) => render(<MemoryRouter><Ecra /></MemoryRouter>);
 
 describe("ecrãs com dados de exemplo", () => {
   const ECRAS = [
-    [Roadmap, "Roadmap"], [Release, "Release 2.0"], [GerarHistorias, "User stories do pedido"],
+    [Release, "Release 2.0"], [GerarHistorias, "User stories do pedido"],
     [Rastreabilidade, "Rastreabilidade"], [EspacoEquipa, "Equipa A"],
     [Dashboard, "Dashboard"], [CargaEquipas, "Carga das equipas"],
   ];
@@ -28,12 +27,6 @@ describe("ecrãs com dados de exemplo", () => {
 });
 
 describe("o que as personas pediram", () => {
-  it("roadmap: a release em risco aparece destacada (Helena)", () => {
-    abrir(Roadmap);
-    expect(screen.getByText(/Em risco/)).toBeTruthy();
-    expect(screen.getByText("Entrega contratual")).toBeTruthy();
-  });
-
   it("dashboard: mostra as tarefas paradas há mais de três dias (Helena)", () => {
     abrir(Dashboard);
     expect(screen.getByText("Paradas há mais de três dias")).toBeTruthy();

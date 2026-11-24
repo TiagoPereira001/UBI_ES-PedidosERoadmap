@@ -67,6 +67,9 @@ export const api = {
   marcarLidas: (ids = []) => pedir("/colaboracao/notificacoes/lidas/", { metodo: "POST", corpo: { ids } }),
   preferencias: () => pedir("/colaboracao/preferencias/"),
   guardarPreferencias: (dados) => pedir("/colaboracao/preferencias/", { metodo: "PUT", corpo: dados }),
+  roadmap: () => pedir("/roadmap/"),
+  criarRelease: (dados) => pedir("/roadmap/", { metodo: "POST", corpo: dados }),
+  release: (id) => pedir(`/roadmap/releases/${id}/`),
   quadro: (id, equipa = "") => pedir(`/backlog/sprints/${id}/quadro/?` + new URLSearchParams(equipa ? { equipa } : {})),
 };
 
