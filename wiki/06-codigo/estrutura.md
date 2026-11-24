@@ -36,10 +36,10 @@ backend/
     api.py           endpoints /api/colaboracao/
     tests/           testes das regras e da API
   roadmap/           módulo Roadmap (Sprint 5)
-    models.py        Release: nome, início, data prevista, data em que foi lançada e os pedidos que leva
-    servicos.py      regras: criar, pôr e tirar pedidos, lançar; estado, progresso e "em risco" tirados das datas
+    models.py        Release; Milestone (nome, data, release, pedidos); Dependencia (pedido → depende_de, única)
+    servicos.py      releases; milestones (estado calculado); dependências sem ciclos (atomic + select_for_update); avisos
     api.py           endpoints /api/roadmap/
-    tests/           testes das regras e da API
+    tests/           testes das regras e da API (inclui N+1 nas listagens)
 frontend/
   src/
     App.jsx          menu e rotas (mesma ordem dos wireframes)
@@ -86,14 +86,16 @@ frontend/
 | GET | `/api/colaboracao/notificacoes/` | As minhas notificações e quantas estão por ler (US-22) | Autenticados |
 | POST | `/api/colaboracao/notificacoes/lidas/` | Marcar como lidas (as dadas, ou todas) | Autenticados |
 | GET, PUT | `/api/colaboracao/preferencias/` | O que cada um quer receber, e se também por email | Autenticados |
-| GET, POST | `/api/roadmap/` | Todas as releases, com estado, progresso e se estão em risco; criar uma release (US-14, US-15) | Todos; criar só o product manager |
-| GET | `/api/roadmap/releases/<id>/` | Uma release com os pedidos | Todos |
+| GET, POST | `/api/roadmap/` | Todas as releases (com milestones); criar uma release (US-14, US-15) | Todos; criar só o product manager |
+| GET | `/api/roadmap/releases/<id>/` | Uma release com pedidos, milestones, dependências e avisos (ecrã 09) | Todos |
 | POST, DELETE | `/api/roadmap/releases/<id>/pedidos/` | Pôr um pedido aprovado na release, ou tirá-lo | Product manager |
 | POST | `/api/roadmap/releases/<id>/lancar/` | Marcar como lançada (só com os pedidos todos concluídos) | Product manager |
+| POST, PATCH, DELETE | `/api/roadmap/milestones/` | Criar, mudar e apagar milestones; pôr/tirar pedidos (US-16) | Product manager |
+| POST, DELETE | `/api/roadmap/dependencias/` | Registar ou apagar dependência entre pedidos (US-17); recusa ciclos | Programador e product manager |
 
 ## Ecrãs
 
-Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntou-se o 08 Roadmap. Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
+Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntaram-se o 08 Roadmap e o 09 Release (`/roadmap/releases/:id`, com milestones e dependências). Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
 
 ## Ver também
 
