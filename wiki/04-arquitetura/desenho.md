@@ -16,6 +16,8 @@ Cada módulo do back-end (`contas`, `pedidos`, `priorizacao`, `backlog`, `colabo
 
 Assim as regras testam-se sem passar pela API (`tests/test_servicos.py`), e a API testa-se à parte (`tests/test_api.py`).
 
+As versões de um pedido (US-03) seguem o mesmo corte: `VersaoPedido` guarda o título e a descrição de cada alteração, `servicos.editar` e `servicos.repor_versao` decidem quem pode mudar e nunca apagam uma versão antiga (repor cria uma versão nova), e o ecrã 04 só mostra o botão Editar quando o detalhe traz `pode_editar`.
+
 ## Dependências entre módulos
 
 ```mermaid
@@ -44,7 +46,7 @@ flowchart LR
 |---|---|---|
 | Camada de serviços | `servicos.py` de cada módulo | As regras ficam num só sítio e testam-se sem HTTP |
 | Tabela de regras | `QUEM_PODE` em `pedidos/servicos.py` | As passagens de estado e quem as faz leem-se como o diagrama de estados. As transições permitidas (`TRANSICOES`) saem da mesma tabela, para não haver duas listas a manter |
-| O servidor diz o que se pode fazer | `pode_mudar_para` no detalhe do pedido e nos cartões do quadro | O ecrã mostra só os botões que o papel pode usar, sem repetir as regras no front-end |
+| O servidor diz o que se pode fazer | `pode_mudar_para` e `pode_editar` no detalhe do pedido e nos cartões do quadro | O ecrã mostra só os botões que o papel pode usar, sem repetir as regras no front-end |
 | Adaptador com alternativa | `ia/cliente.py`, `priorizacao/ia.py` | Só a pasta `ia/` fala com os serviços de IA (Gemini ou Claude). Quem a usa tem uma alternativa: se não houver chave ou a IA falhar, a priorização usa a regra local e continua (decisões D4 e D8) |
 | Observador (sinais do Django) | `colaboracao/sinais.py` | Os avisos de mudança de estado não obrigam `pedidos` a conhecer a colaboração |
 | Uma só porta para o servidor | `frontend/src/api.js` | Os ecrãs não chamam `fetch`. O CSRF e os erros tratam-se num sítio |
