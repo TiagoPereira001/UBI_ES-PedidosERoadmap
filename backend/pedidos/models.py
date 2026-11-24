@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class Estado(models.TextChoices):
@@ -85,3 +86,20 @@ class MudancaEstado(models.Model):
 
     class Meta:
         ordering = ["quando", "id"]
+
+
+class VersaoPedido(models.Model):
+    """Texto de um pedido numa altura. A versão 1 nasce na primeira edição (US-03)."""
+
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name="versoes")
+    titulo = models.CharField(max_length=120)
+    descricao = models.TextField()
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+")
+    # default e não auto_now_add: a versão 1 leva a data do pedido.
+    quando = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["quando", "id"]
+
+    def __str__(self):
+        return self.titulo
