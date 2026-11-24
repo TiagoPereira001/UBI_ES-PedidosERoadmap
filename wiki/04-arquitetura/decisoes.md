@@ -56,6 +56,13 @@ Cada decisão importante fica aqui, com o contexto e as alternativas. Uma decis�
 - **Alternativas:** só o Claude (pago); só o Gemini (deixava de lado o código que já funcionava); usar o pacote oficial da Google (mais uma dependência, quando o pedido é um só POST que a biblioteca padrão do Python faz).
 - **Consequências:** trocar de serviço é mudar uma variável de ambiente. Sem chave nenhuma, tudo funciona como antes. Substitui a parte de D4 que dizia que o serviço era o Claude. Ver [IA no sistema](ia.md).
 
+## D9. Gemma 4 no computador, com o LM Studio (23/11/2026)
+
+- **Contexto:** a chave do Gemini era mais uma coisa para guardar em segredo, o plano gratuito tem limites e os dados saíam para a Google.
+- **Decisão:** por omissão a IA é o Gemma 4 E4B, a correr no LM Studio no computador de quem apresenta, atrás do mesmo `ia/cliente.py`. Passa à frente do Gemini e do Claude, que continuam a funcionar com uma chave.
+- **Alternativas:** Ollama (tem o mesmo modelo; bastava mudar o endereço, porque a API é compatível, mas o LM Studio dá uma janela para ver os pedidos na demonstração); modelos maiores do Gemma 4 (não cabem em 16 GB).
+- **Consequências:** nenhuma chave e nenhum dado a sair. Em troca, ocupa cerca de 7 GB e quem não tiver o LM Studio ligado fica com a regra local, que continua sempre a existir.
+
 ## Ver também
 
 - [IA no sistema](ia.md)
