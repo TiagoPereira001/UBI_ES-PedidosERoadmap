@@ -35,6 +35,11 @@ backend/
     sinais.py        avisa quem segue um pedido quando o estado muda
     api.py           endpoints /api/colaboracao/
     tests/           testes das regras e da API
+  roadmap/           módulo Roadmap (Sprint 5)
+    models.py        Release: nome, início, data prevista, data em que foi lançada e os pedidos que leva
+    servicos.py      regras: criar, pôr e tirar pedidos, lançar; estado, progresso e "em risco" tirados das datas
+    api.py           endpoints /api/roadmap/
+    tests/           testes das regras e da API
 frontend/
   src/
     App.jsx          menu e rotas (mesma ordem dos wireframes)
@@ -81,10 +86,14 @@ frontend/
 | GET | `/api/colaboracao/notificacoes/` | As minhas notificações e quantas estão por ler (US-22) | Autenticados |
 | POST | `/api/colaboracao/notificacoes/lidas/` | Marcar como lidas (as dadas, ou todas) | Autenticados |
 | GET, PUT | `/api/colaboracao/preferencias/` | O que cada um quer receber, e se também por email | Autenticados |
+| GET, POST | `/api/roadmap/` | Todas as releases, com estado, progresso e se estão em risco; criar uma release (US-14, US-15) | Todos; criar só o product manager |
+| GET | `/api/roadmap/releases/<id>/` | Uma release com os pedidos | Todos |
+| POST, DELETE | `/api/roadmap/releases/<id>/pedidos/` | Pôr um pedido aprovado na release, ou tirá-lo | Product manager |
+| POST | `/api/roadmap/releases/<id>/lancar/` | Marcar como lançada (só com os pedidos todos concluídos) | Product manager |
 
 ## Ecrãs
 
-Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. Os outros sete (08 a 11, 13 a 15) mostram dados de exemplo e dizem isso no topo; ligam à API no Sprint 5.
+Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntou-se o 08 Roadmap. Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
 
 ## Ver também
 
