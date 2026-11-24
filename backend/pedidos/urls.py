@@ -11,4 +11,6 @@ urlpatterns = [
     path("pedidos/<int:pk>/voto/", api.Votar.as_view(), name="votar"),
     path("pedidos/<int:pk>/estado/", api.MudarEstado.as_view(), name="mudar-estado"),
     path("pedidos/<int:pk>/classificar/", api.Classificar.as_view(), name="classificar"),
+    path("pedidos/<int:pk>/versoes/", api.VersoesPedido.as_view(), name="versoes-pedido"),
+    path("pedidos/<int:pk>/versoes/<int:versao_id>/repor/", api.ReporVersao.as_view(), name="repor-versao"),
 ]

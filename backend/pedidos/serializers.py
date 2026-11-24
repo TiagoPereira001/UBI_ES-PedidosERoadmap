@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from . import servicos
-from .models import Categoria, Estado, MudancaEstado, Origem, Pedido
+from .models import Categoria, Estado, MudancaEstado, Origem, Pedido, VersaoPedido
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -47,14 +47,32 @@ class PedidoSerializer(serializers.ModelSerializer):
 
 class PedidoDetalheSerializer(PedidoSerializer):
     historico = MudancaEstadoSerializer(many=True, read_only=True)
-    # Os botões de mudar estado vêm do servidor, para o ecrã não repetir as regras.
+    # Os botões de mudar estado e de editar vêm do servidor, para o ecrã não repetir as regras.
     pode_mudar_para = serializers.SerializerMethodField()
+    pode_editar = serializers.SerializerMethodField()
 
     class Meta(PedidoSerializer.Meta):
-        fields = PedidoSerializer.Meta.fields + ["historico", "pode_mudar_para"]
+        fields = PedidoSerializer.Meta.fields + ["historico", "pode_mudar_para", "pode_editar"]
 
     def get_pode_mudar_para(self, pedido):
         return servicos.estados_seguintes(pedido, self.context["request"].user)
+
+    def get_pode_editar(self, pedido):
+        return servicos.pode_editar(pedido, self.context["request"].user)
+
+
+class VersaoPedidoSerializer(serializers.ModelSerializer):
+    autor = serializers.CharField(source="autor.username")
+
+    class Meta:
+        model = VersaoPedido
+        fields = ["id", "titulo", "descricao", "autor", "quando"]
+
+
+class EditarPedidoSerializer(serializers.Serializer):
+    # allow_blank: a regra (título/descrição vazios) fica em servicos.editar.
+    titulo = serializers.CharField(allow_blank=True, max_length=120)
+    descricao = serializers.CharField(allow_blank=True)
 
 
 class MudarEstadoSerializer(serializers.Serializer):

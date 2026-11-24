@@ -11,7 +11,7 @@ from django.db.models import Count, Q
 
 from contas.models import Papel
 
-from .models import Estado, Etiqueta, MudancaEstado, Origem, Pedido, Voto
+from .models import Estado, Etiqueta, MudancaEstado, Origem, Pedido, VersaoPedido, Voto
 
 GESTAO = {Papel.PRODUCT_MANAGER, Papel.PRODUCT_OWNER}
 
@@ -127,3 +127,54 @@ def procurar_parecidos(texto, limite=5):
         return len(raizes & _raizes(p.titulo)) * 2 + len(raizes & _raizes(p.descricao))
 
     return sorted(candidatos, key=lambda p: (-pontos(p), -p.total_votos))[:limite]
+
+
+def pode_editar(pedido, utilizador):
+    """Autor enquanto o pedido está Novo; product manager e Product Owner sempre (US-03)."""
+    if not utilizador.is_authenticated:
+        return False
+    if utilizador.gere_pedidos:
+        return True
+    return pedido.autor_id == utilizador.id and pedido.estado == Estado.NOVO
+
+
+def _gravar_versao_atual_se_primeira(*, pedido):
+    """Na primeira edição, guarda o texto original com o autor e a data do pedido."""
+    if pedido.versoes.exists():
+        return
+    VersaoPedido.objects.create(
+        pedido=pedido,
+        titulo=pedido.titulo,
+        descricao=pedido.descricao,
+        autor=pedido.autor,
+        quando=pedido.criado_em,
+    )
+
+
+@transaction.atomic
+def editar(*, pedido, autor, titulo, descricao):
+    """Muda o texto e guarda uma versão nova. Se nada mudou, não guarda nada."""
+    # Uma edição de cada vez por pedido, para não nascerem duas versões 1.
+    pedido = Pedido.objects.select_for_update().get(pk=pedido.pk)
+    if not pode_editar(pedido, autor):
+        raise SemPermissao("Não podes editar este pedido.")
+    titulo = titulo.strip()
+    descricao = descricao.strip()
+    if not titulo or not descricao:
+        raise RegraViolada("O título e a descrição não podem ficar vazios.")
+    if titulo == pedido.titulo and descricao == pedido.descricao:
+        return pedido
+    _gravar_versao_atual_se_primeira(pedido=pedido)
+    pedido.titulo = titulo
+    pedido.descricao = descricao
+    pedido.save(update_fields=["titulo", "descricao", "atualizado_em"])
+    VersaoPedido.objects.create(pedido=pedido, titulo=titulo, descricao=descricao, autor=autor)
+    return pedido
+
+
+@transaction.atomic
+def repor_versao(*, pedido, versao, autor):
+    """Volta ao texto de uma versão antiga criando uma versão nova. Nunca apaga as antigas."""
+    if versao.pedido_id != pedido.id:
+        raise RegraViolada("Essa versão não é deste pedido.")
+    return editar(pedido=pedido, autor=autor, titulo=versao.titulo, descricao=versao.descricao)

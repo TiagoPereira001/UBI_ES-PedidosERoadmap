@@ -5,13 +5,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import servicos
-from .models import Categoria, Etiqueta, Pedido
+from .models import Categoria, Etiqueta, Pedido, VersaoPedido
 from .serializers import (
     CategoriaSerializer,
     ClassificarSerializer,
+    EditarPedidoSerializer,
     MudarEstadoSerializer,
     PedidoDetalheSerializer,
     PedidoSerializer,
+    VersaoPedidoSerializer,
 )
 
 
@@ -82,6 +84,46 @@ class PedidoDetalhe(APIView):
 
     def get(self, request, pk):
         generics.get_object_or_404(Pedido, pk=pk)
+        return Response(detalhe(pk, request))
+
+    def patch(self, request, pk):
+        if not request.user.is_authenticated:
+            return Response({"erro": "É preciso entrar para editar."}, status=status.HTTP_403_FORBIDDEN)
+        pedido = generics.get_object_or_404(Pedido, pk=pk)
+        entrada = EditarPedidoSerializer(data=request.data)
+        entrada.is_valid(raise_exception=True)
+        try:
+            servicos.editar(pedido=pedido, autor=request.user, **entrada.validated_data)
+        except servicos.SemPermissao as erro:
+            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
+        except servicos.RegraViolada as erro:
+            return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(detalhe(pk, request))
+
+
+class VersoesPedido(APIView):
+    """Lista as versões de um pedido (US-03)."""
+
+    def get(self, request, pk):
+        pedido = generics.get_object_or_404(Pedido, pk=pk)
+        versoes = pedido.versoes.select_related("autor")
+        return Response(VersaoPedidoSerializer(versoes, many=True).data)
+
+
+class ReporVersao(APIView):
+    """Volta ao texto de uma versão antiga, criando uma versão nova (US-03)."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk, versao_id):
+        pedido = generics.get_object_or_404(Pedido, pk=pk)
+        versao = generics.get_object_or_404(VersaoPedido, pk=versao_id, pedido=pedido)
+        try:
+            servicos.repor_versao(pedido=pedido, versao=versao, autor=request.user)
+        except servicos.SemPermissao as erro:
+            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
+        except servicos.RegraViolada as erro:
+            return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(detalhe(pk, request))
 
 
