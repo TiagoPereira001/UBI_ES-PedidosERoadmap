@@ -1,0 +1,50 @@
+# A versão publicada pelo GitHub Actions, sem compilar nada (EDS-196):
+#   docker compose -f docker-compose.publicado.yml up
+# VERSAO escolhe a imagem (por omissão, latest; também pode ser o hash de um commit da main).
+# É para experimentar no próprio computador: as imagens correm os servidores de desenvolvimento
+# e trazem contas de teste. Por isso as portas só respondem em 127.0.0.1.
+name: pedidos-publicado
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pedidos
+      POSTGRES_USER: pedidos
+      POSTGRES_PASSWORD: pedidos-dev
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pedidos -d pedidos"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    image: ghcr.io/tiagopereira001/ubi_es-pedidoseroadmap-backend:${VERSAO:-latest}
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,backend"
+      POSTGRES_HOST: db
+      POSTGRES_DB: pedidos
+      POSTGRES_USER: pedidos
+      POSTGRES_PASSWORD: pedidos-dev
+      LMSTUDIO_URL: ${LMSTUDIO_URL:-}
+      LMSTUDIO_API_KEY: ${LMSTUDIO_API_KEY:-}
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: ghcr.io/tiagopereira001/ubi_es-pedidoseroadmap-frontend:${VERSAO:-latest}
+    environment:
+      API_URL: http://backend:8000
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres:

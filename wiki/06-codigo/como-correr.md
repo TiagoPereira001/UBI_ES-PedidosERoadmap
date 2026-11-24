@@ -36,6 +36,18 @@ docker compose exec db psql -U pedidos pedidos         # consola do PostgreSQL
 docker compose logs -f backend                         # ver o que o back-end escreve
 ```
 
+## A versão publicada (sem compilar)
+
+Cada push na `main` com os testes verdes publica duas imagens no GitHub ([EDS-196](https://ubi-team-ebw5rr6y.atlassian.net/browse/EDS-196)), com as etiquetas `latest` e o hash do commit. Com testes vermelhos não se publica nada. O workflow usa só o `GITHUB_TOKEN` que o GitHub cria para cada execução; não há nenhuma chave guardada.
+
+```bash
+docker login ghcr.io          # utilizador do GitHub e um token com read:packages (o repositório é privado)
+docker compose -f docker-compose.publicado.yml up
+VERSAO=<hash do commit> docker compose -f docker-compose.publicado.yml up    # uma versão certa
+```
+
+É para experimentar no próprio computador: as imagens correm os servidores de desenvolvimento do Django e do Vite e trazem as contas de teste. Para pôr isto na internet faltava um servidor de produção (gunicorn e nginx), `DJANGO_DEBUG=0`, uma `DJANGO_SECRET_KEY` própria e tirar os dados de exemplo.
+
 ## Sem Docker
 
 Precisas de Python 3.9 ou mais recente e de Node 20 ou mais recente. Sem Docker a base de dados é SQLite (um ficheiro em `backend/`), sem instalar nada.

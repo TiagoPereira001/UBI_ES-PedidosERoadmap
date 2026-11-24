@@ -5,3 +5,5 @@ db.sqlite3
 .env
 .coverage
 .ruff_cache/
+.env.*
+!.env.example

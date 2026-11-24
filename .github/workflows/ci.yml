@@ -1,10 +1,15 @@
 # Corre as verificações de qualidade e os testes em cada pull request e em cada push para a main (EDS-165).
+# Num push para a main com tudo verde, publica as imagens Docker no GitHub (EDS-196).
 name: Testes
 
 on:
   push:
     branches: [main]
   pull_request:
+
+# Só leitura; o job que publica pede o que precisa.
+permissions:
+  contents: read
 
 jobs:
   backend:
@@ -38,3 +43,28 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  publicar:
+    # Só depois de os testes dos dois lados passarem, e nunca num pull request.
+    needs: [backend, frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        parte: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Entrar no ghcr.io
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Construir e publicar a imagem
+        run: |
+          # O ghcr.io só aceita nomes em minúsculas.
+          imagem="ghcr.io/${GITHUB_REPOSITORY,,}-${{ matrix.parte }}"
+          docker build --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            -t "$imagem:latest" -t "$imagem:$GITHUB_SHA" "${{ matrix.parte }}"
+          docker push --all-tags "$imagem"
