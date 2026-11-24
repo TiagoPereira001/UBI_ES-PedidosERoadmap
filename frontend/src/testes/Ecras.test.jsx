@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Release from "../paginas/Release.jsx";
 import GerarHistorias from "../paginas/GerarHistorias.jsx";
 import Rastreabilidade from "../paginas/Rastreabilidade.jsx";
 import EspacoEquipa from "../paginas/EspacoEquipa.jsx";
@@ -14,7 +13,7 @@ const abrir = (Ecra) => render(<MemoryRouter><Ecra /></MemoryRouter>);
 
 describe("ecrãs com dados de exemplo", () => {
   const ECRAS = [
-    [Release, "Release 2.0"], [GerarHistorias, "User stories do pedido"],
+    [GerarHistorias, "User stories do pedido"],
     [Rastreabilidade, "Rastreabilidade"], [EspacoEquipa, "Equipa A"],
     [Dashboard, "Dashboard"], [CargaEquipas, "Carga das equipas"],
   ];

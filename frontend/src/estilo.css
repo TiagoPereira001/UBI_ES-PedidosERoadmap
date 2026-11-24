@@ -306,6 +306,7 @@ tr.fora:hover td { background: var(--aviso-fundo); }
 .roadmap-pista { position: relative; height: 70px; z-index: 1; }
 .fita-release { position: absolute; top: 14px; padding: 4px 12px; font-family: var(--letra-mao); font-weight: 700; text-decoration: none; background: var(--fita); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transform: rotate(-0.3deg); }
 .fita-release.em_curso { background: var(--postit); }
+.roadmap-milestones { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; font-size: 0.85rem; }
 .fita-release:hover { box-shadow: 0 2px 6px rgba(28, 28, 28, 0.18); }
 .marco { position: absolute; top: 46px; display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--tinta-2); white-space: nowrap; }
 .linha-hoje { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--regra); z-index: 2; }

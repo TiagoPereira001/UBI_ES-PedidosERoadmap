@@ -8,11 +8,15 @@ afterEach(cleanup);
 
 const release = (id, nome, extra = {}) => ({
   id, nome, objetivo: "", inicio: "2026-11-02", data_prevista: "2026-11-27", lancada_em: null,
-  estado: "em_curso", progresso: 0, em_risco: false, pedidos: [], ...extra,
+  estado: "em_curso", progresso: 0, em_risco: false, pedidos: [], milestones: [], ...extra,
 });
 const ROADMAP = {
   releases: [
-    release(1, "Release 1.0", { objetivo: "Avisos e filtros", em_risco: true }),
+    release(1, "Release 1.0", {
+      objetivo: "Avisos e filtros",
+      em_risco: true,
+      milestones: [{ id: 1, nome: "Beta para clientes", data: "2026-11-15", estado: "por_comecar" }],
+    }),
     release(2, "Release 2.0", { inicio: "2026-11-30", data_prevista: "2026-12-18", estado: "planeada" }),
   ],
 };
@@ -28,6 +32,7 @@ describe("roadmap", () => {
     abrir("gestor_projeto");
     expect(await screen.findByText("Release 1.0")).toBeTruthy();
     expect(screen.getByText("Avisos e filtros")).toBeTruthy();
+    expect(screen.getByText(/Beta para clientes/)).toBeTruthy();
     expect(screen.getAllByText("Em risco")).toHaveLength(1);
     expect(screen.queryByRole("button", { name: "Nova release" })).toBeNull();
   });

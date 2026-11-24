@@ -25,7 +25,7 @@ export const AREAS = [
   { area: "Pedidos", icone: "pedidos", ecras: [["/pedidos", "Pedidos"], ["/pedidos/novo", "Novo pedido"]] },
   { area: "Priorização", icone: "priorizacao", ecras: [["/priorizacao", "Priorização"]] },
   { area: "Backlog", icone: "backlog", ecras: [["/sprint/planear", "Planear sprint"], ["/sprint/quadro", "Quadro do sprint"]] },
-  { area: "Roadmap", icone: "roadmap", ecras: [["/roadmap", "Roadmap"], ["/roadmap/release", "Release 2.0"]] },
+  { area: "Roadmap", icone: "roadmap", ecras: [["/roadmap", "Roadmap"]] },
   { area: "Requisitos", icone: "requisitos", ecras: [["/requisitos/gerar", "Gerar user stories"], ["/requisitos/rastreabilidade", "Rastreabilidade"]] },
   { area: "Equipa", icone: "equipa", ecras: [["/equipa", "Espaço da equipa"]] },
   { area: "Dashboard", icone: "dashboard", ecras: [["/dashboard", "Dashboard"], ["/dashboard/carga", "Carga das equipas"]] },
@@ -115,7 +115,8 @@ export default function App() {
           <Route path="/sprint/planear" element={<PlanearSprint utilizador={utilizador} />} />
           <Route path="/sprint/quadro" element={<QuadroSprint utilizador={utilizador} />} />
           <Route path="/roadmap" element={<Roadmap utilizador={utilizador} />} />
-          <Route path="/roadmap/release" element={<Release />} />
+          <Route path="/roadmap/releases/:id" element={<Release utilizador={utilizador} />} />
+          <Route path="/roadmap/release" element={<Navigate to="/roadmap" replace />} />
           <Route path="/requisitos/gerar" element={<GerarHistorias />} />
           <Route path="/requisitos/rastreabilidade" element={<Rastreabilidade />} />
           <Route path="/notificacoes" element={<Notificacoes utilizador={utilizador} />} />

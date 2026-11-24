@@ -31,8 +31,8 @@ describe("menu", () => {
 
   it("os 15 ecrãs do Figma têm todos lugar", () => {
     const ecras = AREAS.flatMap((a) => a.ecras.map(([, nome]) => nome));
-    // 12 nas áreas + Notificações + Entrar + Detalhe do pedido (abre a partir da lista) = os 15 ecrãs do Figma
-    expect(ecras.length + 3).toBe(15);
+    // 11 nas áreas + Notificações + Entrar + Detalhe + Release (abre a partir do roadmap) = os 15
+    expect(ecras.length + 4).toBe(15);
   });
 
   it("com conta, mostra quantas notificações estão por ler", async () => {

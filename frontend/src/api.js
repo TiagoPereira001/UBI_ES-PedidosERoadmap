@@ -70,6 +70,15 @@ export const api = {
   roadmap: () => pedir("/roadmap/"),
   criarRelease: (dados) => pedir("/roadmap/", { metodo: "POST", corpo: dados }),
   release: (id) => pedir(`/roadmap/releases/${id}/`),
+  porNaRelease: (id, pedido) => pedir(`/roadmap/releases/${id}/pedidos/`, { metodo: "POST", corpo: { pedido } }),
+  tirarDaRelease: (id, pedido) => pedir(`/roadmap/releases/${id}/pedidos/${pedido}/`, { metodo: "DELETE" }),
+  lancarRelease: (id) => pedir(`/roadmap/releases/${id}/lancar/`, { metodo: "POST" }),
+  criarMilestone: (dados) => pedir("/roadmap/milestones/", { metodo: "POST", corpo: dados }),
+  apagarMilestone: (id) => pedir(`/roadmap/milestones/${id}/`, { metodo: "DELETE" }),
+  porNoMilestone: (id, pedido) => pedir(`/roadmap/milestones/${id}/pedidos/`, { metodo: "POST", corpo: { pedido } }),
+  tirarDoMilestone: (id, pedido) => pedir(`/roadmap/milestones/${id}/pedidos/${pedido}/`, { metodo: "DELETE" }),
+  criarDependencia: (dados) => pedir("/roadmap/dependencias/", { metodo: "POST", corpo: dados }),
+  apagarDependencia: (id) => pedir(`/roadmap/dependencias/${id}/`, { metodo: "DELETE" }),
   quadro: (id, equipa = "") => pedir(`/backlog/sprints/${id}/quadro/?` + new URLSearchParams(equipa ? { equipa } : {})),
 };
 

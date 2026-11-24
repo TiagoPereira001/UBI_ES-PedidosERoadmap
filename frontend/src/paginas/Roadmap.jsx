@@ -5,6 +5,7 @@ import Cabecalho from "../componentes/Cabecalho.jsx";
 
 const NOMES_MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 const ESTADOS_RELEASE = { planeada: "Planeada", em_curso: "Em curso", lancada: "Lançada" };
+const ESTADOS_MILESTONE = { por_comecar: "Por começar", em_curso: "Em curso", concluido: "Concluído" };
 const MESES_VISIVEIS = 4;
 const DIA = 24 * 60 * 60 * 1000;
 
@@ -89,12 +90,21 @@ export default function Roadmap({ utilizador }) {
             {releases.map((r) => (
               <div key={r.id} className="roadmap-linha">
                 <div className="roadmap-nome">
-                  <strong>{r.nome}</strong>
+                  <Link to={`/roadmap/releases/${r.id}`}><strong>{r.nome}</strong></Link>
                   <span className="suave">{ESTADOS_RELEASE[r.estado]} · {r.progresso}% concluído</span>
                   {r.em_risco && <span className="autocolante risco">Em risco</span>}
+                  {(r.milestones || []).length > 0 && (
+                    <ul className="roadmap-milestones">
+                      {r.milestones.map((m) => (
+                        <li key={m.id} className="suave">
+                          {m.nome} · {new Date(m.data).toLocaleDateString("pt-PT")} · {ESTADOS_MILESTONE[m.estado] || m.estado}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <div className="roadmap-pista">
-                  <Link to="/roadmap/release" className={`fita-release ${r.estado}`} title={`${r.pedidos.length} pedido(s)`}
+                  <Link to={`/roadmap/releases/${r.id}`} className={`fita-release ${r.estado}`} title={`${r.pedidos.length} pedido(s)`}
                     style={{ left: pos(dia(r.inicio)), width: pos(Math.max(dia(r.data_prevista) - dia(r.inicio), 1)) }}>
                     {r.objetivo || r.nome}
                   </Link>
