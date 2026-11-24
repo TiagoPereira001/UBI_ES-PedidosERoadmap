@@ -109,14 +109,31 @@ RELEASES = [
 ]
 
 
-def planear_releases(marta):
-    """Duas releases no roadmap. A primeira está perto da data e tem tudo por fazer, por isso aparece em risco."""
+def planear_releases(marta, diogo):
+    """Duas releases, um milestone e uma dependência que gera aviso no ecrã 09."""
+    criadas = {}
     for nome, objetivo, inicio, prevista, titulos in RELEASES:
         release = roadmap.criar_release(
             autor=marta, nome=nome, objetivo=objetivo, inicio=inicio, data_prevista=prevista
         )
         for titulo in titulos:
             roadmap.por_na_release(release=release, pedido=Pedido.objects.get(titulo__startswith=titulo), autor=marta)
+        criadas[nome] = release
+    release1 = criadas["Release 1.0"]
+    roadmap.criar_milestone(
+        autor=marta,
+        nome="Beta para clientes",
+        data=date(2026, 11, 15),
+        release=release1,
+        pedidos=list(release1.pedidos.all()),
+    )
+    roadmap.criar_milestone(
+        autor=marta, nome="Lançamento", data=date(2026, 11, 27), release=release1
+    )
+    # Slack (Release 2.0) depende da lista rápida, que não está em nenhuma release → aviso.
+    slack = Pedido.objects.get(titulo__startswith="Ligação ao Slack")
+    lista = Pedido.objects.get(titulo__startswith="Lista de pedidos")
+    roadmap.criar_dependencia(pedido=slack, depende_de=lista, autor=diogo)
 
 
 class Command(BaseCommand):
@@ -153,6 +170,6 @@ class Command(BaseCommand):
         for nome in ["marta", "diogo", "helena"]:
             servicos.alternar_voto(pedido=primeiro, utilizador=pessoas[nome])
         planear(pessoas)
-        planear_releases(pessoas["marta"])
+        planear_releases(pessoas["marta"], pessoas["diogo"])
         nomes = ", ".join(pessoas)
         self.stdout.write(self.style.SUCCESS(f"Pronto. Utilizadores: {nomes} e admin (palavra-passe: nome + 123)."))

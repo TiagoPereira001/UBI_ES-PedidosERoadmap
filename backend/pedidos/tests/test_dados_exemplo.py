@@ -8,7 +8,7 @@ from django.test import TestCase
 from backlog.models import Equipa, Sprint
 from contas.models import Papel, Utilizador
 from pedidos.models import Categoria, Estado, Pedido
-from roadmap.models import Release
+from roadmap.models import Dependencia, Milestone, Release
 
 
 class DadosExemplo(TestCase):
@@ -41,6 +41,8 @@ class DadosExemplo(TestCase):
         self.correr()
         contagem = [(r.nome, r.pedidos.count()) for r in Release.objects.all()]
         self.assertEqual(contagem, [("Release 1.0", 2), ("Release 2.0", 1)])
+        self.assertEqual(Milestone.objects.filter(release__nome="Release 1.0").count(), 2)
+        self.assertEqual(Dependencia.objects.count(), 1)
 
     def test_palavra_passe_e_o_nome_mais_123(self):
         self.correr()
