@@ -326,6 +326,38 @@ Este ficheiro cumpre o que combinámos no Contrato de Equipa: dizer, de forma si
   {} % revisto por (fica {} até alguém rever)
   {} % data da revisão (fica {} até alguém rever)
 
+\entrada%
+  {23/11/2026} % data
+  {Sprint 5: modelo de IA local e chaves} % onde
+  {\claude} % ferramenta
+  {Ligação ao Gemma 4 no LM Studio (backend/ia/lmstudio.py), com testes que não usam a rede, e verificação de que nenhuma chave está no repositório nem no histórico do Git. Publicação das imagens Docker no GitHub Actions. Rastreabilidade (ecrã 11) e carga das equipas (ecrã 15), entregues ao Marcus e ao Felipe para reverem e fazerem commit. Revisão do código das outras ferramentas.} % para quê
+  {} % revisto por (fica {} até alguém rever)
+  {} % data da revisão (fica {} até alguém rever)
+
+\entrada%
+  {23/11/2026} % data
+  {Sprint 5: edição e versões dos pedidos; milestones e dependências} % onde
+  {Cursor} % ferramenta
+  {Código e testes da edição com versões (ecrã 04) e dos milestones e dependências (ecrã 09). Revisto e corrigido com o Claude Code antes de entrar; o segundo foi entregue ao Rui para rever e fazer commit.} % para quê
+  {} % revisto por (fica {} até alguém rever)
+  {} % data da revisão (fica {} até alguém rever)
+
+\entrada%
+  {23/11/2026} % data
+  {Documentação do Git} % onde
+  {Codex (OpenAI)} % ferramenta
+  {Encontrou as contradições com o contrato sobre branches e pull requests no AGENTS.md, no README, na wiki e no guia de Jira, e escreveu a correção. Lista de refactorings para o João escolher.} % para quê
+  {} % revisto por (fica {} até alguém rever)
+  {} % data da revisão (fica {} até alguém rever)
+
+\entrada%
+  {23/11/2026} % data
+  {Aspeto dos ecrãs} % onde
+  {Antigravity (Google)} % ferramenta
+  {Percorreu os ecrãs no browser em duas larguras e fez a lista do que estava mal. Não mudou ficheiros.} % para quê
+  {} % revisto por (fica {} até alguém rever)
+  {} % data da revisão (fica {} até alguém rever)
+
 \entradavazia
 
 %--------------------------------------------------------------------
@@ -343,6 +375,10 @@ Este ficheiro cumpre o que combinámos no Contrato de Equipa: dizer, de forma si
   Character.ai & Levantar requisitos, como o enunciado pede. & Em uso: entrevistas às cinco personas a 17/10 (EDS-55) \\
   \rowcolor{white}
   Claude Code (Anthropic), ferramenta de IA para programar & Apoio ao código, aos testes e à revisão desde o Sprint 3. Quem faz o commit lê, testa e responde pelo que entrega. & Em uso: escolhida pela equipa (EDS-12) \\
+  \rowcolor{azulclaro!55}
+  Cursor, Codex e Antigravity & Código, documentação e verificação visual no Sprint 5, coordenados com o Claude Code. & Em uso desde 23/11 \\
+  \rowcolor{white}
+  Gemma 4 (Google), no LM Studio & O modelo que o próprio produto usa para sugerir prioridades e user stories. Corre no computador. & Em uso desde 23/11 \\
   \bottomrule
 \end{tabularx}
 \renewcommand{\arraystretch}{1}
