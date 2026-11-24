@@ -13,7 +13,12 @@ const PEDIDO = {
 };
 
 function abrir(utilizador, pedido = PEDIDO) {
-  simularApi({ "/pedidos/1/": pedido, "/colaboracao/pedidos/1/comentarios/": [], "/colaboracao/pessoas/": [] });
+  simularApi({
+    "/pedidos/1/": pedido,
+    "/pedidos/1/versoes/": [],
+    "/colaboracao/pedidos/1/comentarios/": [],
+    "/colaboracao/pessoas/": [],
+  });
   render(
     <MemoryRouter initialEntries={["/pedidos/1"]}>
       <Routes><Route path="/pedidos/:id" element={<DetalhePedido utilizador={utilizador} />} /></Routes>
