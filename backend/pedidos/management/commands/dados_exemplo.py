@@ -14,6 +14,7 @@ from contas.models import Papel, Utilizador
 from pedidos import servicos
 from pedidos.models import Categoria, Estado, Pedido
 from priorizacao import servicos as priorizacao
+from roadmap import servicos as roadmap
 
 UTILIZADORES = [
     ("sofia", Papel.CLIENTE),
@@ -101,6 +102,23 @@ def planear(pessoas):
     backlog.por_no_sprint(item=primeiro, sprint=sprint, autor=ricardo)
 
 
+# Releases que a Marta planeia: (nome, objetivo, início, data prevista, início dos títulos dos pedidos)
+RELEASES = [
+    ("Release 1.0", "Avisos e filtros", date(2026, 11, 2), date(2026, 11, 27), ["Aviso por email", "Filtrar pedidos"]),
+    ("Release 2.0", "Integrações", date(2026, 11, 30), date(2026, 12, 18), ["Ligação ao Slack"]),
+]
+
+
+def planear_releases(marta):
+    """Duas releases no roadmap. A primeira está perto da data e tem tudo por fazer, por isso aparece em risco."""
+    for nome, objetivo, inicio, prevista, titulos in RELEASES:
+        release = roadmap.criar_release(
+            autor=marta, nome=nome, objetivo=objetivo, inicio=inicio, data_prevista=prevista
+        )
+        for titulo in titulos:
+            roadmap.por_na_release(release=release, pedido=Pedido.objects.get(titulo__startswith=titulo), autor=marta)
+
+
 class Command(BaseCommand):
     help = "Cria utilizadores de teste e pedidos de exemplo (só para desenvolvimento)."
 
@@ -135,5 +153,6 @@ class Command(BaseCommand):
         for nome in ["marta", "diogo", "helena"]:
             servicos.alternar_voto(pedido=primeiro, utilizador=pessoas[nome])
         planear(pessoas)
+        planear_releases(pessoas["marta"])
         nomes = ", ".join(pessoas)
         self.stdout.write(self.style.SUCCESS(f"Pronto. Utilizadores: {nomes} e admin (palavra-passe: nome + 123)."))

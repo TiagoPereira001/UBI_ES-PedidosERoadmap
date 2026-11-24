@@ -8,6 +8,7 @@ from django.test import TestCase
 from backlog.models import Equipa, Sprint
 from contas.models import Papel, Utilizador
 from pedidos.models import Categoria, Estado, Pedido
+from roadmap.models import Release
 
 
 class DadosExemplo(TestCase):
@@ -35,6 +36,11 @@ class DadosExemplo(TestCase):
         self.assertEqual(Equipa.objects.count(), 3)
         sprint = Sprint.objects.get()
         self.assertEqual((sprint.nome, sprint.capacidade, sprint.itens.count()), ("Sprint 4", 10, 1))
+
+    def test_prepara_duas_releases_no_roadmap(self):
+        self.correr()
+        contagem = [(r.nome, r.pedidos.count()) for r in Release.objects.all()]
+        self.assertEqual(contagem, [("Release 1.0", 2), ("Release 2.0", 1)])
 
     def test_palavra_passe_e_o_nome_mais_123(self):
         self.correr()
