@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import URLValidator
 from django.db import models
 
 from pedidos.models import Pedido
@@ -43,3 +44,23 @@ class Criterio(models.Model):
 
     def __str__(self):
         return self.texto
+
+
+class Ligacao(models.Model):
+    """Onde uma user story foi feita: o commit ou o pull request (US-19).
+
+    Só https, porque o ecrã mostra o endereço como ligação.
+    """
+
+    user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE, related_name="ligacoes")
+    url = models.URLField(validators=[URLValidator(schemes=["https"])])
+    descricao = models.CharField(max_length=120)
+    criada_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+")
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["criada_em", "id"]
+        constraints = [models.UniqueConstraint(fields=["user_story", "url"], name="uma_ligacao_por_endereco")]
+
+    def __str__(self):
+        return self.url
