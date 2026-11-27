@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comentario, Notificacao, Preferencias
+from .models import Comentario, MembroEquipa, MensagemEquipa, Notificacao, Preferencias
 
 
 @admin.register(Comentario)
@@ -15,3 +15,14 @@ class NotificacaoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Preferencias)
+
+
+@admin.register(MembroEquipa)
+class MembroEquipaAdmin(admin.ModelAdmin):
+    list_display = ["equipa", "utilizador"]
+    list_filter = ["equipa"]
+
+
+@admin.register(MensagemEquipa)
+class MensagemEquipaAdmin(admin.ModelAdmin):
+    list_display = ["equipa", "autor", "criada_em"]

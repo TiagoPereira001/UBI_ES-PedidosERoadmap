@@ -54,3 +54,26 @@ class Preferencias(models.Model):
 
     def quer(self, tipo):
         return getattr(self, self.QUER[tipo])
+
+
+class MembroEquipa(models.Model):
+    """Quem faz parte de uma equipa (US-24). A equipa vem do módulo Backlog; aqui só se diz quem lá está."""
+
+    equipa = models.ForeignKey("backlog.Equipa", on_delete=models.CASCADE, related_name="membros")
+    utilizador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="equipas")
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["equipa", "utilizador"], name="uma_vez_por_equipa")]
+        ordering = ["utilizador__username"]
+
+
+class MensagemEquipa(models.Model):
+    """A conversa de uma equipa no seu espaço (US-24). Escrevem os membros e o gestor de projeto."""
+
+    equipa = models.ForeignKey("backlog.Equipa", on_delete=models.CASCADE, related_name="mensagens")
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+")
+    texto = models.TextField()
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["criada_em", "id"]
