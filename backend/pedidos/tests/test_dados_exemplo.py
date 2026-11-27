@@ -44,6 +44,12 @@ class DadosExemplo(TestCase):
         self.assertEqual(Milestone.objects.filter(release__nome="Release 1.0").count(), 2)
         self.assertEqual(Dependencia.objects.count(), 1)
 
+    def test_equipas_com_membros_e_uma_mensagem(self):
+        self.correr()
+        equipa = Equipa.objects.get(nome="Equipa A")
+        self.assertEqual(sorted(equipa.membros.values_list("utilizador__username", flat=True)), ["diogo", "ricardo"])
+        self.assertEqual(equipa.mensagens.count(), 1)
+
     def test_palavra_passe_e_o_nome_mais_123(self):
         self.correr()
         self.assertTrue(Utilizador.objects.get(username="sofia").check_password("sofia123"))

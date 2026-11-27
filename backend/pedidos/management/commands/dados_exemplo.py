@@ -10,6 +10,7 @@ from django.core.management.base import BaseCommand
 
 from backlog import servicos as backlog
 from backlog.models import Equipa
+from colaboracao import servicos as colaboracao
 from contas.models import Papel, Utilizador
 from pedidos import servicos
 from pedidos.models import Categoria, Estado, Pedido
@@ -136,6 +137,22 @@ def planear_releases(marta, diogo):
     roadmap.criar_dependencia(pedido=slack, depende_de=lista, autor=diogo)
 
 
+# Quem faz parte de cada equipa, posto pela Helena (gestora de projeto)
+MEMBROS = {"Equipa A": ["diogo", "ricardo"], "Equipa B": ["marta", "helena"]}
+
+
+def preparar_equipas(pessoas):
+    """Membros das equipas e uma primeira mensagem na conversa da Equipa A (ecrã 13)."""
+    for nome, quem in MEMBROS.items():
+        equipa = Equipa.objects.get(nome=nome)
+        for username in quem:
+            colaboracao.juntar_a_equipa(equipa=equipa, utilizador=pessoas[username], autor=pessoas["helena"])
+    colaboracao.escrever_na_equipa(
+        equipa=Equipa.objects.get(nome="Equipa A"), autor=pessoas["diogo"],
+        texto="Pego no aviso por email esta semana. Se alguém precisar de mim para outra coisa, digam.",
+    )
+
+
 class Command(BaseCommand):
     help = "Cria utilizadores de teste e pedidos de exemplo (só para desenvolvimento)."
 
@@ -171,5 +188,6 @@ class Command(BaseCommand):
             servicos.alternar_voto(pedido=primeiro, utilizador=pessoas[nome])
         planear(pessoas)
         planear_releases(pessoas["marta"], pessoas["diogo"])
+        preparar_equipas(pessoas)
         nomes = ", ".join(pessoas)
         self.stdout.write(self.style.SUCCESS(f"Pronto. Utilizadores: {nomes} e admin (palavra-passe: nome + 123)."))
