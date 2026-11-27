@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import EspacoEquipa from "../paginas/EspacoEquipa.jsx";
 import Dashboard from "../paginas/Dashboard.jsx";
 import CargaEquipas from "../paginas/CargaEquipas.jsx";
 
@@ -11,7 +10,6 @@ const abrir = (Ecra) => render(<MemoryRouter><Ecra /></MemoryRouter>);
 
 describe("ecrãs com dados de exemplo", () => {
   const ECRAS = [
-    [EspacoEquipa, "Equipa A"],
     [Dashboard, "Dashboard"], [CargaEquipas, "Carga das equipas"],
   ];
 

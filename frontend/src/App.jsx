@@ -120,7 +120,7 @@ export default function App() {
           <Route path="/requisitos/gerar" element={<GerarHistorias utilizador={utilizador} />} />
           <Route path="/requisitos/rastreabilidade" element={<Rastreabilidade utilizador={utilizador} />} />
           <Route path="/notificacoes" element={<Notificacoes utilizador={utilizador} />} />
-          <Route path="/equipa" element={<EspacoEquipa />} />
+          <Route path="/equipa" element={<EspacoEquipa utilizador={utilizador} />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/carga" element={<CargaEquipas />} />
         </Routes>
