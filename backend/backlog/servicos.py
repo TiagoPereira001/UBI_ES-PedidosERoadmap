@@ -146,3 +146,8 @@ def atribuir_equipa(*, item, equipa, autor):
     item.equipa = equipa
     item.save(update_fields=["equipa"])
     return item
+
+
+def itens_da_equipa(equipa):
+    """O trabalho atribuído a uma equipa que ainda não acabou, para o espaço da equipa (US-24)."""
+    return _itens().filter(equipa=equipa).exclude(pedido__estado__in=[Estado.CONCLUIDO, Estado.REJEITADO])

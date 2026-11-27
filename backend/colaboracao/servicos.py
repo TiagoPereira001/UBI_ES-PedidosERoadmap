@@ -1,4 +1,4 @@
-"""Regras da colaboração: comentários, menções e notificações (US-21, US-22 e US-23).
+"""Regras da colaboração: comentários, menções, notificações e o espaço de cada equipa (US-21 a US-24).
 
 Os avisos de mudança de estado chegam por um sinal (sinais.py): o módulo Pedidos
 não sabe que este módulo existe, e assim as dependências continuam num só sentido.
@@ -12,9 +12,10 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.utils import timezone
 
+from contas.models import Papel
 from pedidos.servicos import RegraViolada, SemPermissao
 
-from .models import Comentario, Notificacao, Preferencias, TipoNotificacao
+from .models import Comentario, MembroEquipa, MensagemEquipa, Notificacao, Preferencias, TipoNotificacao
 
 MENCAO = re.compile(r"@([\w.+-]+)")
 
@@ -108,3 +109,39 @@ def marcar_lidas(*, utilizador, ids=None):
     if ids:
         por_ler = por_ler.filter(id__in=ids)
     return por_ler.update(lida=True)
+
+
+# Espaço de cada equipa (US-24)
+
+
+def membros(equipa):
+    return get_user_model().objects.filter(equipas__equipa=equipa).order_by("username")
+
+
+def pode_escrever(utilizador, equipa):
+    """Escrevem na conversa da equipa os membros e o gestor de projeto."""
+    if not utilizador.is_authenticated:
+        return False
+    return utilizador.papel == Papel.GESTOR_PROJETO or membros(equipa).filter(pk=utilizador.pk).exists()
+
+
+def pode_gerir(utilizador):
+    return utilizador.is_authenticated and utilizador.papel == Papel.GESTOR_PROJETO
+
+
+@transaction.atomic
+def escrever_na_equipa(*, equipa, autor, texto):
+    if not pode_escrever(autor, equipa):
+        raise SemPermissao("Só os membros da equipa e o gestor de projeto escrevem aqui.")
+    texto = texto.strip()
+    if not texto:
+        raise RegraViolada("A mensagem está vazia.")
+    return MensagemEquipa.objects.create(equipa=equipa, autor=autor, texto=texto)
+
+
+@transaction.atomic
+def juntar_a_equipa(*, equipa, utilizador, autor):
+    """O gestor de projeto (a Helena) diz quem faz parte de cada equipa."""
+    if not pode_gerir(autor):
+        raise SemPermissao("Só o gestor de projeto muda quem faz parte das equipas.")
+    return MembroEquipa.objects.get_or_create(equipa=equipa, utilizador=utilizador)[0]
