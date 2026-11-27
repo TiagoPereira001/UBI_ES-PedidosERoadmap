@@ -8,18 +8,13 @@ from django.db import transaction
 
 from contas.models import Papel
 from pedidos.models import Estado, Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
+from pedidos.servicos import RegraViolada, exigir_papel
 
 from . import gerar
 from .models import Criterio, Ligacao, Origem, UserStory
 
 # Só se escrevem user stories de pedidos que já foram aprovados.
 ESTADOS_COM_HISTORIAS = [Estado.APROVADO, Estado.EM_DESENVOLVIMENTO, Estado.EM_REVISAO, Estado.CONCLUIDO]
-
-
-def _so_product_owner(autor, acao):
-    if autor.papel != Papel.PRODUCT_OWNER:
-        raise SemPermissao(f"Só o Product Owner pode {acao}.")
 
 
 def _aprovado(pedido):
@@ -33,7 +28,7 @@ def pedidos_com_historias():
 
 
 def propor(*, pedido, autor):
-    _so_product_owner(autor, "gerar user stories")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode gerar user stories.")
     _aprovado(pedido)
     return gerar.propor(pedido)
 
@@ -41,7 +36,7 @@ def propor(*, pedido, autor):
 @transaction.atomic
 def aceitar(*, pedido, autor, texto, criterios, origem=Origem.MANUAL):
     """Guarda a user story que o Product Owner aceitou (com as edições dele) e os critérios."""
-    _so_product_owner(autor, "aceitar user stories")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode aceitar user stories.")
     _aprovado(pedido)
     texto = texto.strip()
     criterios = [c.strip() for c in criterios if c.strip()]
@@ -56,7 +51,7 @@ def aceitar(*, pedido, autor, texto, criterios, origem=Origem.MANUAL):
 
 @transaction.atomic
 def marcar_criterio(*, criterio, autor, cumprido):
-    _so_product_owner(autor, "marcar critérios")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode marcar critérios.")
     criterio.cumprido = cumprido
     criterio.save(update_fields=["cumprido"])
     return criterio
@@ -65,8 +60,9 @@ def marcar_criterio(*, criterio, autor, cumprido):
 @transaction.atomic
 def ligar_codigo(*, historia, autor, url, descricao):
     """Liga uma user story ao commit ou ao pull request onde foi feita."""
-    if autor.papel not in (Papel.PROGRAMADOR, Papel.PRODUCT_OWNER):
-        raise SemPermissao("Só o programador ou o Product Owner ligam o código.")
+    exigir_papel(
+        autor, {Papel.PROGRAMADOR, Papel.PRODUCT_OWNER}, "Só o programador ou o Product Owner ligam o código."
+    )
     if historia.ligacoes.filter(url=url).exists():
         raise RegraViolada("Essa ligação já existe nesta user story.")
     return Ligacao.objects.create(user_story=historia, url=url, descricao=descricao.strip(), criada_por=autor)

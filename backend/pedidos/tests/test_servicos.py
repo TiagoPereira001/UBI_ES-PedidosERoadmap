@@ -40,6 +40,17 @@ class CriarPedido(Base):
         self.assertEqual(pedido.origem, Origem.REUNIAO)
 
 
+class ExigirPapel(Base):
+    def test_permite_papel_da_lista(self):
+        servicos.exigir_papel(self.ricardo, {Papel.PRODUCT_OWNER, Papel.PRODUCT_MANAGER}, "Sem acesso.")
+
+    def test_recusa_outro_papel_com_a_mensagem_dada(self):
+        with self.assertRaisesMessage(servicos.SemPermissao, "Só o Product Owner pode planear o sprint."):
+            servicos.exigir_papel(
+                self.sofia, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode planear o sprint."
+            )
+
+
 class MudarEstado(Base):
     def test_segue_o_diagrama_de_estados(self):
         pedido = self.novo()

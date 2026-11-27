@@ -39,6 +39,11 @@ class SemPermissao(Exception):
     """A mudança existe, mas o papel de quem a pede não a pode fazer."""
 
 
+def exigir_papel(autor, papeis, mensagem):
+    if autor.papel not in papeis:
+        raise SemPermissao(mensagem)
+
+
 @transaction.atomic
 def criar_pedido(*, autor, titulo, descricao, categoria, origem=Origem.SISTEMA):
     # Só quem gere pedidos pode registar um pedido que chegou por outro caminho.

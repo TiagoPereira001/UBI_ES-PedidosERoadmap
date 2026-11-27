@@ -8,17 +8,12 @@ from django.db import transaction
 
 from contas.models import Papel
 from pedidos.models import Estado
-from pedidos.servicos import RegraViolada, SemPermissao
+from pedidos.servicos import RegraViolada, exigir_papel
 
 from .models import EstadoSprint, ItemBacklog, Sprint
 
 # No quadro do sprint, uma coluna por estado (ecrã 07).
 COLUNAS = [Estado.APROVADO, Estado.EM_DESENVOLVIMENTO, Estado.EM_REVISAO, Estado.CONCLUIDO]
-
-
-def _so_product_owner(autor, acao):
-    if autor.papel != Papel.PRODUCT_OWNER:
-        raise SemPermissao(f"Só o Product Owner pode {acao}.")
 
 
 def esforco_de(item):
@@ -38,7 +33,7 @@ def _itens():
 @transaction.atomic
 def acrescentar_ao_backlog(*, pedido, autor):
     """Um pedido aprovado entra no product backlog (US-10)."""
-    _so_product_owner(autor, "acrescentar pedidos ao backlog")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode acrescentar pedidos ao backlog.")
     if pedido.estado != Estado.APROVADO:
         raise RegraViolada("Só os pedidos aprovados entram no product backlog.")
     return ItemBacklog.objects.get_or_create(pedido=pedido)[0]
@@ -59,7 +54,7 @@ def pronto_para_sprint(item):
 
 @transaction.atomic
 def criar_sprint(*, autor, nome, objetivo, inicio, fim, capacidade):
-    _so_product_owner(autor, "criar sprints")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode criar sprints.")
     if fim <= inicio:
         raise RegraViolada("O sprint tem de acabar depois de começar.")
     if not objetivo.strip():
@@ -83,7 +78,7 @@ def aviso_capacidade(sprint):
 @transaction.atomic
 def por_no_sprint(*, item, sprint, autor):
     """Passa um item do product backlog para o sprint. Devolve o aviso de capacidade, se houver."""
-    _so_product_owner(autor, "planear o sprint")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode planear o sprint.")
     if sprint.estado == EstadoSprint.FECHADO:
         raise RegraViolada("O sprint já está fechado.")
     pode, motivo = pronto_para_sprint(item)
@@ -96,14 +91,14 @@ def por_no_sprint(*, item, sprint, autor):
 
 @transaction.atomic
 def tirar_do_sprint(*, item, autor):
-    _so_product_owner(autor, "planear o sprint")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode planear o sprint.")
     item.sprint = None
     item.save(update_fields=["sprint"])
 
 
 @transaction.atomic
 def comecar_sprint(*, sprint, autor):
-    _so_product_owner(autor, "começar o sprint")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode começar o sprint.")
     if Sprint.objects.filter(estado=EstadoSprint.EM_CURSO).exclude(pk=sprint.pk).exists():
         raise RegraViolada("Já há um sprint em curso. Fecha-o antes de começar outro.")
     if sprint.estado != EstadoSprint.PLANEADO:
@@ -116,7 +111,7 @@ def comecar_sprint(*, sprint, autor):
 @transaction.atomic
 def fechar_sprint(*, sprint, autor):
     """Fecha o sprint. O que não ficou concluído volta ao product backlog (US-11). Devolve quantos voltaram."""
-    _so_product_owner(autor, "fechar o sprint")
+    exigir_papel(autor, {Papel.PRODUCT_OWNER}, "Só o Product Owner pode fechar o sprint.")
     if sprint.estado == EstadoSprint.FECHADO:
         raise RegraViolada("O sprint já está fechado.")
     voltam = _itens().filter(sprint=sprint).exclude(pedido__estado=Estado.CONCLUIDO)
@@ -141,8 +136,11 @@ def quadro(sprint, equipa=None):
 @transaction.atomic
 def atribuir_equipa(*, item, equipa, autor):
     """O gestor de projeto (ou o Product Owner) diz que equipa faz o trabalho (US-13)."""
-    if autor.papel not in (Papel.GESTOR_PROJETO, Papel.PRODUCT_OWNER):
-        raise SemPermissao("Só o gestor de projeto ou o Product Owner atribuem trabalho a equipas.")
+    exigir_papel(
+        autor,
+        {Papel.GESTOR_PROJETO, Papel.PRODUCT_OWNER},
+        "Só o gestor de projeto ou o Product Owner atribuem trabalho a equipas.",
+    )
     item.equipa = equipa
     item.save(update_fields=["equipa"])
     return item

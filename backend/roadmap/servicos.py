@@ -10,7 +10,7 @@ from django.db import transaction
 
 from contas.models import Papel
 from pedidos.models import Estado, Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
+from pedidos.servicos import RegraViolada, exigir_papel
 
 from .models import Dependencia, Milestone, Release
 
@@ -24,11 +24,6 @@ QUEM_DEPENDENCIA = {Papel.PROGRAMADOR, Papel.PRODUCT_MANAGER}
 
 # Pedidos já em curso (ou feitos) fazem o milestone passar de "por começar".
 ESTADOS_EM_CURSO = {Estado.EM_DESENVOLVIMENTO, Estado.EM_REVISAO, Estado.CONCLUIDO}
-
-
-def _so_product_manager(autor, acao):
-    if autor.papel != Papel.PRODUCT_MANAGER:
-        raise SemPermissao(f"Só o product manager pode {acao}.")
 
 
 def estado(release, hoje=None):
@@ -71,7 +66,7 @@ def estado_milestone(milestone):
 
 @transaction.atomic
 def criar_release(*, autor, nome, inicio, data_prevista, objetivo=""):
-    _so_product_manager(autor, "criar releases")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode criar releases.")
     if data_prevista <= inicio:
         raise RegraViolada("A data prevista tem de ser depois do início.")
     if Release.objects.filter(nome__iexact=nome.strip()).exists():
@@ -83,7 +78,7 @@ def criar_release(*, autor, nome, inicio, data_prevista, objetivo=""):
 
 @transaction.atomic
 def por_na_release(*, release, pedido, autor):
-    _so_product_manager(autor, "planear releases")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode planear releases.")
     if release.lancada_em:
         raise RegraViolada("Esta release já foi lançada.")
     if pedido.estado not in ESTADOS_QUE_ENTRAM:
@@ -93,7 +88,7 @@ def por_na_release(*, release, pedido, autor):
 
 @transaction.atomic
 def tirar_da_release(*, release, pedido, autor):
-    _so_product_manager(autor, "planear releases")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode planear releases.")
     if release.lancada_em:
         raise RegraViolada("Esta release já foi lançada.")
     release.pedidos.remove(pedido)
@@ -102,7 +97,7 @@ def tirar_da_release(*, release, pedido, autor):
 @transaction.atomic
 def lancar_release(*, release, autor, hoje=None):
     """Marca a release como lançada. Só se lança quando todos os pedidos estão concluídos."""
-    _so_product_manager(autor, "lançar releases")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode lançar releases.")
     if release.lancada_em:
         raise RegraViolada("Esta release já foi lançada.")
     if release.pedidos.exclude(estado=Estado.CONCLUIDO).exists():
@@ -129,7 +124,7 @@ def pedidos_que_entram():
 
 @transaction.atomic
 def criar_milestone(*, autor, nome, data, release=None, pedidos=None):
-    _so_product_manager(autor, "criar milestones")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode criar milestones.")
     milestone = Milestone.objects.create(nome=nome.strip(), data=data, release=release)
     if pedidos:
         milestone.pedidos.set(pedidos)
@@ -138,7 +133,7 @@ def criar_milestone(*, autor, nome, data, release=None, pedidos=None):
 
 @transaction.atomic
 def mudar_milestone(*, milestone, autor, nome=None, data=None, limpar_release=False, release=None, pedidos=None):
-    _so_product_manager(autor, "mudar milestones")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode mudar milestones.")
     campos = []
     if nome is not None:
         milestone.nome = nome.strip()
@@ -161,19 +156,19 @@ def mudar_milestone(*, milestone, autor, nome=None, data=None, limpar_release=Fa
 
 @transaction.atomic
 def apagar_milestone(*, milestone, autor):
-    _so_product_manager(autor, "apagar milestones")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode apagar milestones.")
     milestone.delete()
 
 
 @transaction.atomic
 def por_no_milestone(*, milestone, pedido, autor):
-    _so_product_manager(autor, "mudar milestones")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode mudar milestones.")
     milestone.pedidos.add(pedido)
 
 
 @transaction.atomic
 def tirar_do_milestone(*, milestone, pedido, autor):
-    _so_product_manager(autor, "mudar milestones")
+    exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode mudar milestones.")
     milestone.pedidos.remove(pedido)
 
 
@@ -211,8 +206,7 @@ def _ha_caminho(*, de, ate):
 
 @transaction.atomic
 def criar_dependencia(*, pedido, depende_de, autor):
-    if autor.papel not in QUEM_DEPENDENCIA:
-        raise SemPermissao("Só o programador ou o product manager registam dependências.")
+    exigir_papel(autor, QUEM_DEPENDENCIA, "Só o programador ou o product manager registam dependências.")
     if pedido.id == depende_de.id:
         raise RegraViolada("Um pedido não pode depender de si próprio.")
 
@@ -230,8 +224,7 @@ def criar_dependencia(*, pedido, depende_de, autor):
 
 @transaction.atomic
 def apagar_dependencia(*, dependencia, autor):
-    if autor.papel not in QUEM_DEPENDENCIA:
-        raise SemPermissao("Só o programador ou o product manager apagam dependências.")
+    exigir_papel(autor, QUEM_DEPENDENCIA, "Só o programador ou o product manager apagam dependências.")
     dependencia.delete()
 
 

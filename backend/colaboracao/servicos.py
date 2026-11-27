@@ -13,7 +13,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from contas.models import Papel
-from pedidos.servicos import RegraViolada, SemPermissao
+from pedidos.servicos import RegraViolada, SemPermissao, exigir_papel
 
 from .models import Comentario, MembroEquipa, MensagemEquipa, Notificacao, Preferencias, TipoNotificacao
 
@@ -142,6 +142,5 @@ def escrever_na_equipa(*, equipa, autor, texto):
 @transaction.atomic
 def juntar_a_equipa(*, equipa, utilizador, autor):
     """O gestor de projeto (a Helena) diz quem faz parte de cada equipa."""
-    if not pode_gerir(autor):
-        raise SemPermissao("Só o gestor de projeto muda quem faz parte das equipas.")
+    exigir_papel(autor, {Papel.GESTOR_PROJETO}, "Só o gestor de projeto muda quem faz parte das equipas.")
     return MembroEquipa.objects.get_or_create(equipa=equipa, utilizador=utilizador)[0]
