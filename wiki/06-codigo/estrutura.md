@@ -41,9 +41,9 @@ backend/
     api.py           endpoints /api/roadmap/
     tests/           testes das regras e da API (inclui N+1 nas listagens)
   requisitos/        módulo Requisitos (Sprint 5)
-    models.py        UserStory (texto, de onde veio, quem aceitou) e Criterio de aceitação
+    models.py        UserStory, Criterio de aceitação e Ligacao (o commit onde a user story foi feita)
     gerar.py         propostas de user stories: pede à IA (pasta ia/) ou usa o modelo local
-    servicos.py      regras: propor e aceitar (só o Product Owner, só de pedidos aprovados)
+    servicos.py      regras: propor, aceitar e marcar critérios (Product Owner); ligar o código; o que falta em cada pedido
     api.py           endpoints /api/requisitos/
     tests/           testes das propostas (sem chamar a IA), das regras e da API
 frontend/
@@ -101,10 +101,14 @@ frontend/
 | GET | `/api/requisitos/pedidos/` | Pedidos aprovados de onde se geram user stories, com quantas já têm | Todos |
 | GET, POST | `/api/requisitos/pedidos/<id>/historias/` | User stories aceites de um pedido, com os critérios; aceitar uma (US-18) | Todos; aceitar só o Product Owner |
 | POST | `/api/requisitos/pedidos/<id>/propostas/` | Propostas de user stories, da IA ou do modelo local, e de onde vieram | Product Owner |
+| GET | `/api/requisitos/rastreabilidade/` | Do pedido ao código e à release, com o que falta ligar (US-19) | Todos |
+| POST | `/api/requisitos/historias/<id>/ligacoes/` | Ligar uma user story a um commit (só endereços https) | Programador e Product Owner |
+| PATCH | `/api/requisitos/criterios/<id>/` | Marcar um critério de aceitação como cumprido | Product Owner |
+| GET | `/api/metricas/?dias=30\|90\|365` | Números do dashboard: submetidos, aprovados, rejeitados, lead time e cycle time em dias, por mês, por release e pedidos parados há mais de três dias (US-25 a US-27) | Todos |
 
 ## Ecrãs
 
-Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntaram-se o 08 Roadmap e o 09 Release (`/roadmap/releases/:id`, com milestones e dependências). Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
+Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntaram-se o 08 Roadmap, o 09 Release (`/roadmap/releases/:id`, com milestones e dependências), o 10 Gerar user stories e o 11 Rastreabilidade. Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
 
 ## Ver também
 
