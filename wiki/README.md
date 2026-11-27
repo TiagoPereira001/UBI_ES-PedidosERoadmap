@@ -58,6 +58,10 @@ Quem chega agora lê primeiro o [estado atual](currentstate.md). Quem vai mexer 
 - [Sprint 5](07-scrum/sprint-5.md)
 - [Apresentação final](07-scrum/apresentacao-sprint-5.md)
 
+## Entrega
+
+- [Manual de utilizador](08-entrega/manual.md)
+
 ## Fora da wiki
 
 - [README do projeto](../README.md)
