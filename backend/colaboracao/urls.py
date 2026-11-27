@@ -9,4 +9,7 @@ urlpatterns = [
     path("notificacoes/", api.Notificacoes.as_view(), name="notificacoes"),
     path("notificacoes/lidas/", api.MarcarLidas.as_view(), name="notificacoes-lidas"),
     path("preferencias/", api.PreferenciasView.as_view(), name="preferencias"),
+    path("equipas/<int:pk>/", api.EspacoEquipa.as_view(), name="espaco-equipa"),
+    path("equipas/<int:pk>/mensagens/", api.MensagensEquipa.as_view(), name="mensagens-equipa"),
+    path("equipas/<int:pk>/membros/", api.MembrosEquipa.as_view(), name="membros-equipa"),
 ]

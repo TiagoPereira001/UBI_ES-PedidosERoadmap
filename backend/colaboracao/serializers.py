@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Comentario, Notificacao, Preferencias
+from .models import Comentario, MensagemEquipa, Notificacao, Preferencias
 
 
 class ComentarioSerializer(serializers.ModelSerializer):
@@ -31,3 +31,26 @@ class PreferenciasSerializer(serializers.ModelSerializer):
 
 class LidasSerializer(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField(), required=False, default=list)
+
+
+class MembroSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    papel = serializers.CharField()
+    papel_nome = serializers.CharField(source="get_papel_display")
+
+
+class TrabalhoSerializer(serializers.Serializer):
+    pedido = serializers.IntegerField(source="pedido.id")
+    titulo = serializers.CharField(source="pedido.titulo")
+    estado = serializers.CharField(source="pedido.estado")
+    estado_nome = serializers.CharField(source="pedido.get_estado_display")
+    sprint = serializers.CharField(source="sprint.nome", default=None)
+
+
+class MensagemSerializer(serializers.ModelSerializer):
+    autor = serializers.CharField(source="autor.username", read_only=True)
+
+    class Meta:
+        model = MensagemEquipa
+        fields = ["id", "autor", "texto", "criada_em"]

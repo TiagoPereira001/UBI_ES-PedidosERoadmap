@@ -4,12 +4,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from backlog import servicos as backlog
+from backlog.models import Equipa
 from pedidos.models import Pedido
 from pedidos.servicos import RegraViolada, SemPermissao
 
 from . import servicos
 from .models import Comentario, Notificacao
-from .serializers import ComentarioSerializer, LidasSerializer, NotificacaoSerializer, PreferenciasSerializer
+from .serializers import (
+    ComentarioSerializer,
+    LidasSerializer,
+    MembroSerializer,
+    MensagemSerializer,
+    NotificacaoSerializer,
+    PreferenciasSerializer,
+    TrabalhoSerializer,
+)
 
 
 def erro(falha):
@@ -104,3 +114,46 @@ class PreferenciasView(APIView):
         entrada.is_valid(raise_exception=True)
         entrada.save()
         return Response(entrada.data)
+
+
+def espaco(equipa, utilizador):
+    return {
+        "equipa": {"id": equipa.id, "nome": equipa.nome},
+        "membros": MembroSerializer(servicos.membros(equipa), many=True).data,
+        "trabalho": TrabalhoSerializer(backlog.itens_da_equipa(equipa), many=True).data,
+        "mensagens": MensagemSerializer(equipa.mensagens.select_related("autor"), many=True).data,
+        "pode_escrever": servicos.pode_escrever(utilizador, equipa),
+        "pode_gerir": servicos.pode_gerir(utilizador),
+    }
+
+
+class EspacoEquipa(APIView):
+    """O espaço de uma equipa (ecrã 13): quem lá está, o trabalho em curso e a conversa (US-24)."""
+
+    def get(self, request, pk):
+        return Response(espaco(generics.get_object_or_404(Equipa, pk=pk), request.user))
+
+
+class MensagensEquipa(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        equipa = generics.get_object_or_404(Equipa, pk=pk)
+        try:
+            servicos.escrever_na_equipa(equipa=equipa, autor=request.user, texto=request.data.get("texto", ""))
+        except (SemPermissao, RegraViolada) as falha:
+            return erro(falha)
+        return Response(espaco(equipa, request.user), status=status.HTTP_201_CREATED)
+
+
+class MembrosEquipa(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        equipa = generics.get_object_or_404(Equipa, pk=pk)
+        pessoa = generics.get_object_or_404(get_user_model(), username=request.data.get("utilizador", ""))
+        try:
+            servicos.juntar_a_equipa(equipa=equipa, utilizador=pessoa, autor=request.user)
+        except SemPermissao as falha:
+            return erro(falha)
+        return Response(espaco(equipa, request.user))
