@@ -2,7 +2,7 @@
 
 Há duas formas de fazer as propostas, como na sugestão de prioridade (decisões D4 e D8):
 
-- um serviço de IA (Gemini ou Claude), através de `ia.cliente`, quando há uma chave configurada;
+- um serviço de IA (Gemma 4 no LM Studio, Gemini ou Claude), através de `ia.cliente`, quando há um configurado;
 - um modelo local, sem rede, que monta as frases a partir do título e da descrição do pedido.
 
 As propostas são só propostas: nada fica guardado sem o Product Owner aceitar.
@@ -106,7 +106,10 @@ def _validar(dados):
 
 
 def propor(pedido):
-    """Devolve (propostas, fonte, serviço). A fonte é 'ia' ou 'modelo local'; o serviço, 'gemini', 'claude' ou None."""
+    """Devolve (propostas, fonte, serviço).
+
+    A fonte é 'ia' ou 'modelo local'; o serviço, 'lmstudio', 'gemini', 'claude' ou None.
+    """
     dados = {
         "titulo": pedido.titulo,
         "descricao": pedido.descricao,

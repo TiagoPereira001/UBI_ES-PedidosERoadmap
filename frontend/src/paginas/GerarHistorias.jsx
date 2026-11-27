@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import Cabecalho from "../componentes/Cabecalho.jsx";
+import { SERVICOS_IA } from "../componentes/formatos.js";
 
-const SERVICOS = { gemini: "Gemini (Google)", claude: "Claude (Anthropic)" };
 
 // Ecrã 10. As user stories geradas são propostas: só ficam guardadas as que o Product Owner aceitar,
 // com as edições que fizer (Ricardo). Sem chave de IA, as propostas vêm de um modelo local.
@@ -82,7 +82,7 @@ export default function GerarHistorias({ utilizador }) {
       {gerado && (
         <p className="nota">
           {gerado.fonte === "ia"
-            ? `Propostas feitas pelo ${SERVICOS[gerado.servico] ?? "serviço de IA"}. Revê antes de aceitar.`
+            ? `Propostas feitas pelo ${SERVICOS_IA[gerado.servico] ?? "serviço de IA"}. Revê antes de aceitar.`
             : "O serviço de IA não está disponível. Estas propostas foram montadas pelo modelo local, a partir do título e da descrição."}
         </p>
       )}
