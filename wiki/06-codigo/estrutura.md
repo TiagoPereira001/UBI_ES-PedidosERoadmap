@@ -40,6 +40,12 @@ backend/
     servicos.py      releases; milestones (estado calculado); dependências sem ciclos (atomic + select_for_update); avisos
     api.py           endpoints /api/roadmap/
     tests/           testes das regras e da API (inclui N+1 nas listagens)
+  requisitos/        módulo Requisitos (Sprint 5)
+    models.py        UserStory (texto, de onde veio, quem aceitou) e Criterio de aceitação
+    gerar.py         propostas de user stories: pede à IA (pasta ia/) ou usa o modelo local
+    servicos.py      regras: propor e aceitar (só o Product Owner, só de pedidos aprovados)
+    api.py           endpoints /api/requisitos/
+    tests/           testes das propostas (sem chamar a IA), das regras e da API
 frontend/
   src/
     App.jsx          menu e rotas (mesma ordem dos wireframes)
@@ -92,6 +98,9 @@ frontend/
 | POST | `/api/roadmap/releases/<id>/lancar/` | Marcar como lançada (só com os pedidos todos concluídos) | Product manager |
 | POST, PATCH, DELETE | `/api/roadmap/milestones/` | Criar, mudar e apagar milestones; pôr/tirar pedidos (US-16) | Product manager |
 | POST, DELETE | `/api/roadmap/dependencias/` | Registar ou apagar dependência entre pedidos (US-17); recusa ciclos | Programador e product manager |
+| GET | `/api/requisitos/pedidos/` | Pedidos aprovados de onde se geram user stories, com quantas já têm | Todos |
+| GET, POST | `/api/requisitos/pedidos/<id>/historias/` | User stories aceites de um pedido, com os critérios; aceitar uma (US-18) | Todos; aceitar só o Product Owner |
+| POST | `/api/requisitos/pedidos/<id>/propostas/` | Propostas de user stories, da IA ou do modelo local, e de onde vieram | Product Owner |
 
 ## Ecrãs
 

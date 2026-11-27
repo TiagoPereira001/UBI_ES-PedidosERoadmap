@@ -21,8 +21,9 @@ ecrã 05 (Priorização)  ──►  priorizacao/ia.py  ──►  ia/cliente.py
 | `backend/ia/gemini.py` | Faz o pedido ao Gemini pela API REST, só com a biblioteca padrão do Python. A chave vai num cabeçalho, nunca no endereço. |
 | `backend/ia/claude.py` | Faz o pedido ao Claude pelo pacote `anthropic`, com saída estruturada. |
 | `backend/priorizacao/ia.py` | Monta o pedido (instruções, dados dos pedidos e esquema da resposta), valida a resposta e, se alguma coisa falhar, usa a regra local. |
+| `backend/requisitos/gerar.py` | Propõe user stories a partir de um pedido aprovado (ecrã 10). Envia o título, a descrição, a categoria e o papel de quem pediu; sem IA, usa um modelo local que monta as frases a partir do pedido. |
 
-Qualquer módulo que precise de IA faz o mesmo que a priorização: chama `pedir_json(instrucoes, dados, esquema)`, valida o que vem e tem uma alternativa local. No Sprint 5, a geração de user stories (ecrã 10) usa o mesmo cliente.
+Qualquer módulo que precise de IA faz o mesmo que a priorização: chama `pedir_json(instrucoes, dados, esquema)`, valida o que vem e tem uma alternativa local. A geração de user stories (ecrã 10) faz isto desde o Sprint 5.
 
 ## Qual serviço se usa
 
