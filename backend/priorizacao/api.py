@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from contas.models import Papel
 from pedidos.models import Pedido
+
 from . import ia, servicos
 from .models import ESFORCOS, AlteracaoOrdem, Impacto
 from .serializers import AlteracaoOrdemSerializer, EstimarSerializer, ItemPriorizacaoSerializer, OrdenarSerializer

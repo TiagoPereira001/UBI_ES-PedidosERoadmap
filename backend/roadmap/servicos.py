@@ -33,6 +33,11 @@ def estado(release, hoje=None):
     return "em_curso" if release.inicio <= hoje else "planeada"
 
 
+def exigir_release_nao_lancada(release):
+    if release.lancada_em:
+        raise RegraViolada("Esta release já foi lançada.")
+
+
 def progresso(release):
     """Percentagem de pedidos concluídos. Sem pedidos, 0."""
     pedidos = list(release.pedidos.all())
@@ -79,8 +84,7 @@ def criar_release(*, autor, nome, inicio, data_prevista, objetivo=""):
 @transaction.atomic
 def por_na_release(*, release, pedido, autor):
     exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode planear releases.")
-    if release.lancada_em:
-        raise RegraViolada("Esta release já foi lançada.")
+    exigir_release_nao_lancada(release)
     if pedido.estado not in ESTADOS_QUE_ENTRAM:
         raise RegraViolada("Só os pedidos aprovados entram numa release.")
     release.pedidos.add(pedido)
@@ -89,8 +93,7 @@ def por_na_release(*, release, pedido, autor):
 @transaction.atomic
 def tirar_da_release(*, release, pedido, autor):
     exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode planear releases.")
-    if release.lancada_em:
-        raise RegraViolada("Esta release já foi lançada.")
+    exigir_release_nao_lancada(release)
     release.pedidos.remove(pedido)
 
 
@@ -98,8 +101,7 @@ def tirar_da_release(*, release, pedido, autor):
 def lancar_release(*, release, autor, hoje=None):
     """Marca a release como lançada. Só se lança quando todos os pedidos estão concluídos."""
     exigir_papel(autor, {Papel.PRODUCT_MANAGER}, "Só o product manager pode lançar releases.")
-    if release.lancada_em:
-        raise RegraViolada("Esta release já foi lançada.")
+    exigir_release_nao_lancada(release)
     if release.pedidos.exclude(estado=Estado.CONCLUIDO).exists():
         raise RegraViolada("Ainda há pedidos por concluir nesta release.")
     release.lancada_em = hoje or date.today()

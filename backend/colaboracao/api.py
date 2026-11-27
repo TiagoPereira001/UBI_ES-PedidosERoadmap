@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from backlog import servicos as backlog
 from backlog.models import Equipa
 from pedidos.models import Pedido
+
 from . import servicos
 from .models import Comentario, Notificacao
 from .serializers import (

@@ -4,10 +4,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from colaboracao.models import Comentario
+from colaboracao.tests.base import Dados
 from config.erros import tratar_excecao
 from pedidos.servicos import RegraViolada, SemPermissao
-
-from colaboracao.tests.base import Dados
 
 
 class TestTratamentoDeErros(APITestCase):

@@ -15,6 +15,16 @@ class Releases(Dados, TestCase):
     def release(self, nome="Release 1.0", inicio=date(2026, 11, 2), prevista=date(2026, 11, 27)):
         return servicos.criar_release(autor=self.marta, nome=nome, inicio=inicio, data_prevista=prevista)
 
+    def release_lancada_com_pedido(self):
+        release = self.release()
+        pedido = self.aprovado("Pedido concluído")
+        pedidos.mudar_estado(pedido=pedido, para=Estado.EM_DESENVOLVIMENTO, autor=self.diogo)
+        pedidos.mudar_estado(pedido=pedido, para=Estado.EM_REVISAO, autor=self.diogo)
+        pedidos.mudar_estado(pedido=pedido, para=Estado.CONCLUIDO, autor=self.ricardo)
+        servicos.por_na_release(release=release, pedido=pedido, autor=self.marta)
+        servicos.lancar_release(release=release, autor=self.marta, hoje=HOJE)
+        return release, pedido
+
     def test_so_o_product_manager_cria_releases(self):
         with self.assertRaises(SemPermissao):
             servicos.criar_release(autor=self.ricardo, nome="R", inicio=HOJE, data_prevista=date(2026, 12, 1))
@@ -35,6 +45,22 @@ class Releases(Dados, TestCase):
             servicos.por_na_release(release=release, pedido=novo, autor=self.marta)
         servicos.por_na_release(release=release, pedido=self.aprovado("Aprovado"), autor=self.marta)
         self.assertEqual(release.pedidos.count(), 1)
+
+    def test_nao_poe_pedido_numa_release_ja_lancada(self):
+        release, existente = self.release_lancada_com_pedido()
+
+        with self.assertRaisesMessage(RegraViolada, "Esta release já foi lançada."):
+            servicos.por_na_release(release=release, pedido=self.aprovado("Pedido novo"), autor=self.marta)
+
+        self.assertEqual(list(release.pedidos.all()), [existente])
+
+    def test_nao_tira_pedido_de_uma_release_ja_lancada(self):
+        release, existente = self.release_lancada_com_pedido()
+
+        with self.assertRaisesMessage(RegraViolada, "Esta release já foi lançada."):
+            servicos.tirar_da_release(release=release, pedido=existente, autor=self.marta)
+
+        self.assertEqual(list(release.pedidos.all()), [existente])
 
     def test_estado_vem_das_datas(self):
         release = self.release()
