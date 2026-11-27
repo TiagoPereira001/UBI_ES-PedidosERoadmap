@@ -44,6 +44,7 @@ Quem chega agora lê primeiro o [estado atual](currentstate.md). Quem vai mexer 
 - [Como correr o projeto](06-codigo/como-correr.md)
 - [Estrutura do código](06-codigo/estrutura.md)
 - [Testes](06-codigo/testes.md)
+- [Refactoring](06-codigo/refactoring.md)
 - [Git e pull requests](06-codigo/git.md)
 
 ## 7. Scrum
