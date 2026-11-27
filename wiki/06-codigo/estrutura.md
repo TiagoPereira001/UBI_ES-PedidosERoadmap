@@ -30,8 +30,9 @@ backend/
     api.py           endpoints /api/backlog/
     tests/           testes das regras e da API
   colaboracao/       módulo Colaboração
-    models.py        Comentario, Notificacao, Preferencias
-    servicos.py      regras: comentar, editar e apagar (só o autor), menções, quem segue um pedido, notificar
+    models.py        Comentario, Notificacao, Preferencias, MembroEquipa e MensagemEquipa (espaço de cada equipa)
+    servicos.py      regras: comentar, editar e apagar (só o autor), menções, quem segue um pedido, notificar;
+                     no espaço da equipa, quem lá está, quem escreve na conversa e quem muda os membros
     sinais.py        avisa quem segue um pedido quando o estado muda
     api.py           endpoints /api/colaboracao/
     tests/           testes das regras e da API
@@ -94,6 +95,11 @@ frontend/
 | GET, PUT | `/api/colaboracao/preferencias/` | O que cada um quer receber, e se também por email | Autenticados |
 | GET, POST | `/api/roadmap/` | Todas as releases (com milestones); criar uma release (US-14, US-15) | Todos; criar só o product manager |
 | GET | `/api/roadmap/releases/<id>/` | Uma release com pedidos, milestones, dependências e avisos (ecrã 09) | Todos |
+| GET | `/api/colaboracao/equipas/<id>/` | Espaço da equipa: membros, trabalho por acabar, conversa, e se quem está autenticado pode escrever ou gerir (US-24) | Todos |
+| POST | `/api/colaboracao/equipas/<id>/mensagens/` | Escrever na conversa da equipa | Membros e gestor de projeto |
+| POST | `/api/colaboracao/equipas/<id>/membros/` | Juntar uma pessoa à equipa | Gestor de projeto |
+| GET, POST | `/api/roadmap/` | Todas as releases, com estado, progresso e se estão em risco; criar uma release (US-14, US-15) | Todos; criar só o product manager |
+| GET | `/api/roadmap/releases/<id>/` | Uma release com os pedidos | Todos |
 | POST, DELETE | `/api/roadmap/releases/<id>/pedidos/` | Pôr um pedido aprovado na release, ou tirá-lo | Product manager |
 | POST | `/api/roadmap/releases/<id>/lancar/` | Marcar como lançada (só com os pedidos todos concluídos) | Product manager |
 | POST, PATCH, DELETE | `/api/roadmap/milestones/` | Criar, mudar e apagar milestones; pôr/tirar pedidos (US-16) | Product manager |
@@ -108,7 +114,7 @@ frontend/
 
 ## Ecrãs
 
-Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntaram-se o 08 Roadmap, o 09 Release (`/roadmap/releases/:id`, com milestones e dependências), o 10 Gerar user stories e o 11 Rastreabilidade. Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
+Os 15 ecrãs do Figma existem como página. Desde o Sprint 4, oito falam com a API: 01 Entrar, 02 Pedidos, 03 Novo pedido, 04 Detalhe do pedido (com a conversa), 05 Priorização, 06 Planear sprint, 07 Quadro do sprint e 12 Notificações. No Sprint 5 juntaram-se o 08 Roadmap, o 09 Release (`/roadmap/releases/:id`, com milestones e dependências), o 10 Gerar user stories, o 11 Rastreabilidade e o 13 Espaço da equipa. Os que ainda mostram dados de exemplo dizem isso no topo e ligam à API durante o Sprint 5.
 
 ## Ver também
 
