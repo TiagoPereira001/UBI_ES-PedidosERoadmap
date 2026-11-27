@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from pedidos.models import Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
+from pedidos.servicos import RegraViolada
 
 from . import servicos
 from .models import Dependencia, Milestone, Release
@@ -18,11 +18,6 @@ from .serializers import (
     ReleaseDetalheSerializer,
     ReleaseSerializer,
 )
-
-
-def erro(falha):
-    codigo = status.HTTP_403_FORBIDDEN if isinstance(falha, SemPermissao) else status.HTTP_400_BAD_REQUEST
-    return Response({"erro": str(falha)}, status=codigo)
 
 
 def _pedidos_por_ids(ids):
@@ -43,10 +38,7 @@ class Roadmap(APIView):
     def post(self, request):
         entrada = ReleaseSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            release = servicos.criar_release(autor=request.user, **entrada.validated_data)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        release = servicos.criar_release(autor=request.user, **entrada.validated_data)
         return Response(ReleaseSerializer(release).data, status=status.HTTP_201_CREATED)
 
 
@@ -66,20 +58,14 @@ class PedidosDaRelease(APIView):
         entrada = PedidoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
         pedido = generics.get_object_or_404(Pedido, pk=entrada.validated_data["pedido"])
-        try:
-            servicos.por_na_release(release=release, pedido=pedido, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.por_na_release(release=release, pedido=pedido, autor=request.user)
         release = servicos.release_com_detalhe(pk)
         return Response(ReleaseDetalheSerializer(release).data)
 
     def delete(self, request, pk, pedido):
         release = generics.get_object_or_404(Release, pk=pk)
         alvo = generics.get_object_or_404(Pedido, pk=pedido)
-        try:
-            servicos.tirar_da_release(release=release, pedido=alvo, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.tirar_da_release(release=release, pedido=alvo, autor=request.user)
         release = servicos.release_com_detalhe(pk)
         return Response(ReleaseDetalheSerializer(release).data)
 
@@ -89,10 +75,7 @@ class LancarRelease(APIView):
 
     def post(self, request, pk):
         release = generics.get_object_or_404(Release, pk=pk)
-        try:
-            servicos.lancar_release(release=release, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.lancar_release(release=release, autor=request.user)
         return Response(ReleaseDetalheSerializer(servicos.release_com_detalhe(pk)).data)
 
 
@@ -106,17 +89,14 @@ class MilestoneLista(APIView):
         release = None
         if "release" in dados and dados["release"] is not None:
             release = generics.get_object_or_404(Release, pk=dados["release"])
-        try:
-            pedidos = _pedidos_por_ids(dados.get("pedidos") or [])
-            milestone = servicos.criar_milestone(
-                autor=request.user,
-                nome=dados["nome"],
-                data=dados["data"],
-                release=release,
-                pedidos=pedidos or None,
-            )
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        pedidos = _pedidos_por_ids(dados.get("pedidos") or [])
+        milestone = servicos.criar_milestone(
+            autor=request.user,
+            nome=dados["nome"],
+            data=dados["data"],
+            release=release,
+            pedidos=pedidos or None,
+        )
         milestone = Milestone.objects.prefetch_related("pedidos").get(pk=milestone.pk)
         return Response(MilestoneSerializer(milestone).data, status=status.HTTP_201_CREATED)
 
@@ -140,23 +120,14 @@ class MilestoneDetalhe(APIView):
             else:
                 kwargs["release"] = generics.get_object_or_404(Release, pk=dados["release"])
         if "pedidos" in dados:
-            try:
-                kwargs["pedidos"] = _pedidos_por_ids(dados["pedidos"])
-            except RegraViolada as falha:
-                return erro(falha)
-        try:
-            servicos.mudar_milestone(milestone=milestone, autor=request.user, **kwargs)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+            kwargs["pedidos"] = _pedidos_por_ids(dados["pedidos"])
+        servicos.mudar_milestone(milestone=milestone, autor=request.user, **kwargs)
         milestone = Milestone.objects.prefetch_related("pedidos").get(pk=pk)
         return Response(MilestoneSerializer(milestone).data)
 
     def delete(self, request, pk):
         milestone = generics.get_object_or_404(Milestone, pk=pk)
-        try:
-            servicos.apagar_milestone(milestone=milestone, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.apagar_milestone(milestone=milestone, autor=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -168,20 +139,14 @@ class PedidosDoMilestone(APIView):
         entrada = PedidoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
         pedido = generics.get_object_or_404(Pedido, pk=entrada.validated_data["pedido"])
-        try:
-            servicos.por_no_milestone(milestone=milestone, pedido=pedido, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.por_no_milestone(milestone=milestone, pedido=pedido, autor=request.user)
         milestone = Milestone.objects.prefetch_related("pedidos").get(pk=pk)
         return Response(MilestoneSerializer(milestone).data)
 
     def delete(self, request, pk, pedido):
         milestone = generics.get_object_or_404(Milestone, pk=pk)
         alvo = generics.get_object_or_404(Pedido, pk=pedido)
-        try:
-            servicos.tirar_do_milestone(milestone=milestone, pedido=alvo, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.tirar_do_milestone(milestone=milestone, pedido=alvo, autor=request.user)
         milestone = Milestone.objects.prefetch_related("pedidos").get(pk=pk)
         return Response(MilestoneSerializer(milestone).data)
 
@@ -194,12 +159,7 @@ class DependenciaLista(APIView):
         entrada.is_valid(raise_exception=True)
         pedido = generics.get_object_or_404(Pedido, pk=entrada.validated_data["pedido"])
         depende_de = generics.get_object_or_404(Pedido, pk=entrada.validated_data["depende_de"])
-        try:
-            dependencia = servicos.criar_dependencia(
-                pedido=pedido, depende_de=depende_de, autor=request.user
-            )
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        dependencia = servicos.criar_dependencia(pedido=pedido, depende_de=depende_de, autor=request.user)
         dependencia = Dependencia.objects.select_related("pedido", "depende_de", "criada_por").get(
             pk=dependencia.pk
         )
@@ -211,8 +171,5 @@ class DependenciaDetalhe(APIView):
 
     def delete(self, request, pk):
         dependencia = generics.get_object_or_404(Dependencia, pk=pk)
-        try:
-            servicos.apagar_dependencia(dependencia=dependencia, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.apagar_dependencia(dependencia=dependencia, autor=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)

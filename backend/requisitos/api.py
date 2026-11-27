@@ -4,8 +4,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from pedidos.models import Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
-
 from . import servicos
 from .models import Criterio, UserStory
 from .serializers import (
@@ -17,11 +15,6 @@ from .serializers import (
     PedidoComHistorias,
     UserStorySerializer,
 )
-
-
-def erro(falha):
-    codigo = status.HTTP_403_FORBIDDEN if isinstance(falha, SemPermissao) else status.HTTP_400_BAD_REQUEST
-    return Response({"erro": str(falha)}, status=codigo)
 
 
 class Pedidos(APIView):
@@ -45,10 +38,7 @@ class HistoriasDoPedido(APIView):
         alvo = generics.get_object_or_404(Pedido, pk=pedido)
         entrada = AceitarSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            historia = servicos.aceitar(pedido=alvo, autor=request.user, **entrada.validated_data)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        historia = servicos.aceitar(pedido=alvo, autor=request.user, **entrada.validated_data)
         return Response(UserStorySerializer(historia).data, status=status.HTTP_201_CREATED)
 
 
@@ -59,10 +49,7 @@ class Propostas(APIView):
 
     def post(self, request, pedido):
         alvo = generics.get_object_or_404(Pedido, pk=pedido)
-        try:
-            propostas, fonte, servico = servicos.propor(pedido=alvo, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        propostas, fonte, servico = servicos.propor(pedido=alvo, autor=request.user)
         return Response({"fonte": fonte, "servico": servico, "propostas": propostas})
 
 
@@ -80,10 +67,7 @@ class LigacoesDaHistoria(APIView):
         historia = generics.get_object_or_404(UserStory, pk=pk)
         entrada = LigacaoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            ligacao = servicos.ligar_codigo(historia=historia, autor=request.user, **entrada.validated_data)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        ligacao = servicos.ligar_codigo(historia=historia, autor=request.user, **entrada.validated_data)
         return Response(LigacaoSerializer(ligacao).data, status=status.HTTP_201_CREATED)
 
 
@@ -96,8 +80,5 @@ class CriterioDetalhe(APIView):
         criterio = generics.get_object_or_404(Criterio, pk=pk)
         entrada = CriterioCumprido(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            servicos.marcar_criterio(criterio=criterio, autor=request.user, **entrada.validated_data)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.marcar_criterio(criterio=criterio, autor=request.user, **entrada.validated_data)
         return Response(CriterioSerializer(criterio).data)

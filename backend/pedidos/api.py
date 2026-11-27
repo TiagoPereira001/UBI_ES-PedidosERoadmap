@@ -92,12 +92,7 @@ class PedidoDetalhe(APIView):
         pedido = generics.get_object_or_404(Pedido, pk=pk)
         entrada = EditarPedidoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            servicos.editar(pedido=pedido, autor=request.user, **entrada.validated_data)
-        except servicos.SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
-        except servicos.RegraViolada as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
+        servicos.editar(pedido=pedido, autor=request.user, **entrada.validated_data)
         return Response(detalhe(pk, request))
 
 
@@ -118,12 +113,7 @@ class ReporVersao(APIView):
     def post(self, request, pk, versao_id):
         pedido = generics.get_object_or_404(Pedido, pk=pk)
         versao = generics.get_object_or_404(VersaoPedido, pk=versao_id, pedido=pedido)
-        try:
-            servicos.repor_versao(pedido=pedido, versao=versao, autor=request.user)
-        except servicos.SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
-        except servicos.RegraViolada as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
+        servicos.repor_versao(pedido=pedido, versao=versao, autor=request.user)
         return Response(detalhe(pk, request))
 
 
@@ -156,12 +146,7 @@ class MudarEstado(APIView):
         pedido = generics.get_object_or_404(Pedido, pk=pk)
         entrada = MudarEstadoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            servicos.mudar_estado(pedido=pedido, autor=request.user, **entrada.validated_data)
-        except servicos.SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
-        except servicos.RegraViolada as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
+        servicos.mudar_estado(pedido=pedido, autor=request.user, **entrada.validated_data)
         return Response(detalhe(pk, request))
 
 
@@ -174,8 +159,5 @@ class Classificar(APIView):
         pedido = generics.get_object_or_404(Pedido, pk=pk)
         entrada = ClassificarSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            servicos.classificar(pedido=pedido, autor=request.user, **entrada.validated_data)
-        except servicos.SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
+        servicos.classificar(pedido=pedido, autor=request.user, **entrada.validated_data)
         return Response(detalhe(pk, request))

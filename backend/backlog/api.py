@@ -4,8 +4,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from pedidos.models import Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
-
 from . import servicos
 from .models import Equipa, ItemBacklog, Sprint
 from .serializers import (
@@ -15,11 +13,6 @@ from .serializers import (
     PedidoSerializer,
     SprintSerializer,
 )
-
-
-def erro(falha):
-    codigo = status.HTTP_403_FORBIDDEN if isinstance(falha, SemPermissao) else status.HTTP_400_BAD_REQUEST
-    return Response({"erro": str(falha)}, status=codigo)
 
 
 def itens(lista, request):
@@ -43,10 +36,7 @@ class ProductBacklog(APIView):
         entrada = PedidoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
         pedido = generics.get_object_or_404(Pedido, pk=entrada.validated_data["pedido"])
-        try:
-            servicos.acrescentar_ao_backlog(pedido=pedido, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.acrescentar_ao_backlog(pedido=pedido, autor=request.user)
         return Response({"itens": itens(servicos.product_backlog(), request)}, status=status.HTTP_201_CREATED)
 
 
@@ -57,10 +47,7 @@ class AtribuirEquipa(APIView):
         item = generics.get_object_or_404(ItemBacklog, pedido_id=pedido)
         entrada = AtribuirEquipaSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            servicos.atribuir_equipa(item=item, autor=request.user, equipa=entrada.validated_data["equipa"])
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.atribuir_equipa(item=item, autor=request.user, equipa=entrada.validated_data["equipa"])
         return Response(ItemSerializer(item, context={"request": request}).data)
 
 
@@ -76,10 +63,7 @@ class SprintLista(generics.ListAPIView):
     def post(self, request):
         entrada = SprintSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        try:
-            sprint = servicos.criar_sprint(autor=request.user, **entrada.validated_data)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        sprint = servicos.criar_sprint(autor=request.user, **entrada.validated_data)
         return Response(SprintSerializer(sprint).data, status=status.HTTP_201_CREATED)
 
 
@@ -104,19 +88,13 @@ class ItensDoSprint(APIView):
         entrada = PedidoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
         item = generics.get_object_or_404(ItemBacklog, pedido_id=entrada.validated_data["pedido"])
-        try:
-            servicos.por_no_sprint(item=item, sprint=sprint, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.por_no_sprint(item=item, sprint=sprint, autor=request.user)
         return Response(detalhe_do_sprint(sprint, request))
 
     def delete(self, request, pk, pedido):
         sprint = generics.get_object_or_404(Sprint, pk=pk)
         item = generics.get_object_or_404(ItemBacklog, pedido_id=pedido, sprint=sprint)
-        try:
-            servicos.tirar_do_sprint(item=item, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.tirar_do_sprint(item=item, autor=request.user)
         return Response(detalhe_do_sprint(sprint, request))
 
 
@@ -125,10 +103,7 @@ class ComecarSprint(APIView):
 
     def post(self, request, pk):
         sprint = generics.get_object_or_404(Sprint, pk=pk)
-        try:
-            servicos.comecar_sprint(sprint=sprint, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.comecar_sprint(sprint=sprint, autor=request.user)
         return Response(detalhe_do_sprint(sprint, request))
 
 
@@ -137,10 +112,7 @@ class FecharSprint(APIView):
 
     def post(self, request, pk):
         sprint = generics.get_object_or_404(Sprint, pk=pk)
-        try:
-            voltaram = servicos.fechar_sprint(sprint=sprint, autor=request.user)
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        voltaram = servicos.fechar_sprint(sprint=sprint, autor=request.user)
         return Response({"voltaram_ao_backlog": voltaram, "sprint": SprintSerializer(sprint).data})
 
 

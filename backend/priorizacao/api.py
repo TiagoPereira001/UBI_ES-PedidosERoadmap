@@ -6,8 +6,6 @@ from rest_framework.views import APIView
 
 from contas.models import Papel
 from pedidos.models import Pedido
-from pedidos.servicos import SemPermissao
-
 from . import ia, servicos
 from .models import ESFORCOS, AlteracaoOrdem, Impacto
 from .serializers import AlteracaoOrdemSerializer, EstimarSerializer, ItemPriorizacaoSerializer, OrdenarSerializer
@@ -55,8 +53,6 @@ class Estimar(APIView):
         entrada.is_valid(raise_exception=True)
         try:
             servicos.estimar(pedido=pedido, autor=request.user, **entrada.validated_data)
-        except SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
         except servicos.EstimativaInvalida as erro:
             return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(resposta_da_lista(request))
@@ -72,8 +68,6 @@ class Ordenar(APIView):
         entrada.is_valid(raise_exception=True)
         try:
             servicos.ordenar(autor=request.user, **entrada.validated_data)
-        except SemPermissao as erro:
-            return Response({"erro": str(erro)}, status=status.HTTP_403_FORBIDDEN)
         except servicos.EstimativaInvalida as erro:
             return Response({"erro": str(erro)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(resposta_da_lista(request))

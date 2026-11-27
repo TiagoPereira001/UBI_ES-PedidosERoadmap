@@ -7,8 +7,6 @@ from rest_framework.views import APIView
 from backlog import servicos as backlog
 from backlog.models import Equipa
 from pedidos.models import Pedido
-from pedidos.servicos import RegraViolada, SemPermissao
-
 from . import servicos
 from .models import Comentario, Notificacao
 from .serializers import (
@@ -22,11 +20,6 @@ from .serializers import (
 )
 
 
-def erro(falha):
-    codigo = status.HTTP_403_FORBIDDEN if isinstance(falha, SemPermissao) else status.HTTP_400_BAD_REQUEST
-    return Response({"erro": str(falha)}, status=codigo)
-
-
 class Comentarios(APIView):
     """A conversa de um pedido (US-21). Ler é para todos; escrever, para quem tem conta."""
 
@@ -36,10 +29,7 @@ class Comentarios(APIView):
 
     def post(self, request, pedido):
         alvo = generics.get_object_or_404(Pedido, pk=pedido)
-        try:
-            comentario = servicos.comentar(pedido=alvo, autor=request.user, texto=request.data.get("texto", ""))
-        except RegraViolada as falha:
-            return erro(falha)
+        comentario = servicos.comentar(pedido=alvo, autor=request.user, texto=request.data.get("texto", ""))
         dados = ComentarioSerializer(comentario, context={"request": request}).data
         return Response(dados, status=status.HTTP_201_CREATED)
 
@@ -51,18 +41,12 @@ class ComentarioDetalhe(APIView):
 
     def patch(self, request, pk):
         comentario = generics.get_object_or_404(Comentario, pk=pk)
-        try:
-            servicos.editar(comentario=comentario, autor=request.user, texto=request.data.get("texto", ""))
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.editar(comentario=comentario, autor=request.user, texto=request.data.get("texto", ""))
         return Response(ComentarioSerializer(comentario, context={"request": request}).data)
 
     def delete(self, request, pk):
         comentario = generics.get_object_or_404(Comentario, pk=pk)
-        try:
-            servicos.apagar(comentario=comentario, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.apagar(comentario=comentario, autor=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -139,10 +123,7 @@ class MensagensEquipa(APIView):
 
     def post(self, request, pk):
         equipa = generics.get_object_or_404(Equipa, pk=pk)
-        try:
-            servicos.escrever_na_equipa(equipa=equipa, autor=request.user, texto=request.data.get("texto", ""))
-        except (SemPermissao, RegraViolada) as falha:
-            return erro(falha)
+        servicos.escrever_na_equipa(equipa=equipa, autor=request.user, texto=request.data.get("texto", ""))
         return Response(espaco(equipa, request.user), status=status.HTTP_201_CREATED)
 
 
@@ -152,8 +133,5 @@ class MembrosEquipa(APIView):
     def post(self, request, pk):
         equipa = generics.get_object_or_404(Equipa, pk=pk)
         pessoa = generics.get_object_or_404(get_user_model(), username=request.data.get("utilizador", ""))
-        try:
-            servicos.juntar_a_equipa(equipa=equipa, utilizador=pessoa, autor=request.user)
-        except SemPermissao as falha:
-            return erro(falha)
+        servicos.juntar_a_equipa(equipa=equipa, utilizador=pessoa, autor=request.user)
         return Response(espaco(equipa, request.user))
