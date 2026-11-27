@@ -83,6 +83,13 @@ export const api = {
   historias: (pedido) => pedir(`/requisitos/pedidos/${pedido}/historias/`),
   propostas: (pedido) => pedir(`/requisitos/pedidos/${pedido}/propostas/`, { metodo: "POST" }),
   aceitarHistoria: (pedido, dados) => pedir(`/requisitos/pedidos/${pedido}/historias/`, { metodo: "POST", corpo: dados }),
+  rastreabilidade: () => pedir("/requisitos/rastreabilidade/"),
+  ligarCodigo: (historia, dados) => pedir(`/requisitos/historias/${historia}/ligacoes/`, { metodo: "POST", corpo: dados }),
+  marcarCriterio: (id, cumprido) => pedir(`/requisitos/criterios/${id}/`, { metodo: "PATCH", corpo: { cumprido } }),
+  espacoEquipa: (id) => pedir(`/colaboracao/equipas/${id}/`),
+  escreverNaEquipa: (id, texto) => pedir(`/colaboracao/equipas/${id}/mensagens/`, { metodo: "POST", corpo: { texto } }),
+  juntarAEquipa: (id, utilizador) => pedir(`/colaboracao/equipas/${id}/membros/`, { metodo: "POST", corpo: { utilizador } }),
+  metricas: (dias = 90) => pedir("/metricas/?" + new URLSearchParams({ dias })),
   quadro: (id, equipa = "") => pedir(`/backlog/sprints/${id}/quadro/?` + new URLSearchParams(equipa ? { equipa } : {})),
 };
 
