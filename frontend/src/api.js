@@ -79,6 +79,10 @@ export const api = {
   tirarDoMilestone: (id, pedido) => pedir(`/roadmap/milestones/${id}/pedidos/${pedido}/`, { metodo: "DELETE" }),
   criarDependencia: (dados) => pedir("/roadmap/dependencias/", { metodo: "POST", corpo: dados }),
   apagarDependencia: (id) => pedir(`/roadmap/dependencias/${id}/`, { metodo: "DELETE" }),
+  pedidosRequisitos: () => pedir("/requisitos/pedidos/"),
+  historias: (pedido) => pedir(`/requisitos/pedidos/${pedido}/historias/`),
+  propostas: (pedido) => pedir(`/requisitos/pedidos/${pedido}/propostas/`, { metodo: "POST" }),
+  aceitarHistoria: (pedido, dados) => pedir(`/requisitos/pedidos/${pedido}/historias/`, { metodo: "POST", corpo: dados }),
   quadro: (id, equipa = "") => pedir(`/backlog/sprints/${id}/quadro/?` + new URLSearchParams(equipa ? { equipa } : {})),
 };
 

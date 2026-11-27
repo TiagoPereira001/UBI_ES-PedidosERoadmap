@@ -117,7 +117,7 @@ export default function App() {
           <Route path="/roadmap" element={<Roadmap utilizador={utilizador} />} />
           <Route path="/roadmap/releases/:id" element={<Release utilizador={utilizador} />} />
           <Route path="/roadmap/release" element={<Navigate to="/roadmap" replace />} />
-          <Route path="/requisitos/gerar" element={<GerarHistorias />} />
+          <Route path="/requisitos/gerar" element={<GerarHistorias utilizador={utilizador} />} />
           <Route path="/requisitos/rastreabilidade" element={<Rastreabilidade />} />
           <Route path="/notificacoes" element={<Notificacoes utilizador={utilizador} />} />
           <Route path="/equipa" element={<EspacoEquipa />} />
