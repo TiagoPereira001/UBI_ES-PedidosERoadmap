@@ -7,7 +7,16 @@ from pedidos.models import Pedido
 from pedidos.servicos import RegraViolada, SemPermissao
 
 from . import servicos
-from .serializers import AceitarSerializer, PedidoComHistorias, UserStorySerializer
+from .models import Criterio, UserStory
+from .serializers import (
+    AceitarSerializer,
+    CadeiaSerializer,
+    CriterioCumprido,
+    CriterioSerializer,
+    LigacaoSerializer,
+    PedidoComHistorias,
+    UserStorySerializer,
+)
 
 
 def erro(falha):
@@ -55,3 +64,40 @@ class Propostas(APIView):
         except (SemPermissao, RegraViolada) as falha:
             return erro(falha)
         return Response({"fonte": fonte, "servico": servico, "propostas": propostas})
+
+
+class Rastreabilidade(APIView):
+    """Do pedido ao código e à release, com o que falta ligar (ecrã 11, US-19)."""
+
+    def get(self, request):
+        return Response(CadeiaSerializer(servicos.rastreabilidade(), many=True).data)
+
+
+class LigacoesDaHistoria(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        historia = generics.get_object_or_404(UserStory, pk=pk)
+        entrada = LigacaoSerializer(data=request.data)
+        entrada.is_valid(raise_exception=True)
+        try:
+            ligacao = servicos.ligar_codigo(historia=historia, autor=request.user, **entrada.validated_data)
+        except (SemPermissao, RegraViolada) as falha:
+            return erro(falha)
+        return Response(LigacaoSerializer(ligacao).data, status=status.HTTP_201_CREATED)
+
+
+class CriterioDetalhe(APIView):
+    """Marcar ou desmarcar um critério de aceitação como cumprido (só o Product Owner)."""
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        criterio = generics.get_object_or_404(Criterio, pk=pk)
+        entrada = CriterioCumprido(data=request.data)
+        entrada.is_valid(raise_exception=True)
+        try:
+            servicos.marcar_criterio(criterio=criterio, autor=request.user, **entrada.validated_data)
+        except SemPermissao as falha:
+            return erro(falha)
+        return Response(CriterioSerializer(criterio).data)
