@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "backlog",
     "colaboracao",
     "roadmap",
+    "requisitos",
 ]
 
 MIDDLEWARE = [
